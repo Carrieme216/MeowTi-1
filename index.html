@@ -10,7 +10,7 @@
     />
     <style>
       :root {
-        --yellow: #fde68a;
+        --yellow: #fff1b8;
         --soft-yellow: #fff8dc;
         --orange: #f59e0b;
         --brown: #5f4b32;
@@ -80,7 +80,7 @@
         border-radius: 28px;
         box-shadow: var(--shadow);
         margin-top: 18px;
-        padding: 22px;
+        padding: 28px 22px;
       }
 
       .hidden {
@@ -91,49 +91,48 @@
         text-align: center;
       }
 
-      /* 首頁海報 */
-      .poster-shell {
-        background: #fff;
-        border-radius: 28px;
-        box-shadow: var(--shadow);
-        margin-top: 18px;
-        padding: 12px;
+      /* Home */
+      .home-brand {
+        font-size: 15px;
+        font-weight: 700;
+        color: #b88a2d;
+        letter-spacing: 0.5px;
+        margin-bottom: 16px;
       }
 
-      .poster-wrap {
-        position: relative;
+      .home-title {
+        font-size: 42px;
+        font-weight: 800;
+        line-height: 1.25;
+        color: var(--brown);
+        margin-bottom: 14px;
+      }
+
+      .home-sub {
+        font-size: 15px;
+        line-height: 1.7;
+        color: #8d7b57;
+        margin-bottom: 28px;
+      }
+
+      .primary-btn {
         width: 100%;
-        border-radius: 22px;
-        overflow: hidden;
-        background: #fff;
-      }
-
-      .poster-img {
-        width: 100%;
-        display: block;
-        border-radius: 22px;
-      }
-
-      /* 透明按鈕：蓋在圖片裡的「開始變貓」位置 */
-      .poster-start-hitbox {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: 7%;
-        width: 72%;
-        height: 11%;
-        background: transparent;
+        background: var(--orange);
+        color: #fff;
+        font-weight: 700;
         border: none;
-        border-radius: 999px;
+        border-radius: 18px;
+        padding: 16px;
         cursor: pointer;
+        font-size: 16px;
+        box-shadow: 0 10px 18px rgba(245, 158, 11, 0.22);
       }
 
-      .poster-start-hitbox:focus {
-        outline: 2px dashed rgba(245, 158, 11, 0.7);
-        outline-offset: 4px;
+      .primary-btn:hover {
+        transform: translateY(-1px);
       }
 
-      /* 載入影片 */
+      /* loading */
       #loading-layer {
         position: fixed;
         inset: 0;
@@ -162,7 +161,7 @@
         text-align: center;
       }
 
-      /* 測試頁 */
+      /* quiz */
       .quiz-tip {
         text-align: center;
         font-size: 12px;
@@ -221,7 +220,7 @@
         background: var(--option-bg);
         border: 1.5px solid var(--option-border);
         border-radius: 18px;
-        padding: 16px 16px;
+        padding: 16px;
         margin-bottom: 12px;
         color: var(--brown);
         font-size: 15px;
@@ -247,7 +246,7 @@
         font-size: 14px;
       }
 
-      /* 結果頁 */
+      /* result */
       .result-title {
         text-align: center;
         font-size: 20px;
@@ -298,21 +297,7 @@
         margin-top: 8px;
       }
 
-      .primary-btn {
-        width: 100%;
-        background: var(--orange);
-        color: #fff;
-        font-weight: 700;
-        border: none;
-        border-radius: 18px;
-        padding: 15px;
-        cursor: pointer;
-        font-size: 16px;
-        margin-top: 18px;
-        box-shadow: 0 10px 18px rgba(245, 158, 11, 0.22);
-      }
-
-      /* 百科頁 */
+      /* wiki */
       .wiki-card {
         text-align: center;
         padding: 8px 0 26px;
@@ -339,7 +324,7 @@
         padding: 0 10px;
       }
 
-      /* Contact */
+      /* contact */
       .contact-avatar {
         width: 120px;
         height: 120px;
@@ -356,13 +341,12 @@
         }
 
         .page-card {
-          padding: 18px;
+          padding: 24px 18px;
           border-radius: 24px;
         }
 
-        .poster-shell {
-          padding: 10px;
-          border-radius: 24px;
+        .home-title {
+          font-size: 34px;
         }
 
         .question-title {
@@ -376,7 +360,6 @@
     </style>
   </head>
   <body>
-    <!-- loading mp4 -->
     <div id="loading-layer" class="hidden">
       <video id="loading-video" muted playsinline preload="auto">
         <source src="loading-cat.mp4" type="video/mp4" />
@@ -400,20 +383,39 @@
 
       <!-- HOME -->
       <div id="home" class="page">
-        <div class="poster-shell">
-          <div class="poster-wrap">
-            <img
-              src="meow-cover.png"
-              class="poster-img"
-              alt="MeowTI Cover"
-            />
-            <button
-              class="poster-start-hitbox"
-              onclick="startQuiz()"
-              aria-label="開始變貓"
-              title="開始變貓"
-            ></button>
+        <div class="page-card center">
+          <div
+            class="home-brand"
+            data-zh="測測你的 MeowTI"
+            data-en="Test Your MeowTI"
+          >
+            測測你的 MeowTI
           </div>
+
+          <div
+            class="home-title"
+            data-zh="咪的天，<br>睡醒變成小貓了！"
+            data-en="Oh meow...<br>I woke up as a kitten!"
+          >
+            咪的天，<br>睡醒變成小貓了！
+          </div>
+
+          <div
+            class="home-sub"
+            data-zh="先別慌，做完題再決定要不要喵。"
+            data-en="Do not panic. Finish the quiz first, then decide whether to meow."
+          >
+            先別慌，做完題再決定要不要喵。
+          </div>
+
+          <button
+            class="primary-btn"
+            onclick="startQuiz()"
+            data-zh="開始變貓"
+            data-en="Start Becoming a Cat"
+          >
+            開始變貓
+          </button>
         </div>
       </div>
 
@@ -566,7 +568,6 @@
         ]
       };
 
-      // 先只保留 1 題
       const questions = [
         {
           qz: "如果你剛睡醒，發現自己真的變成一隻小貓，你第一件事會做什麼？",
@@ -596,7 +597,6 @@
         }
       ];
 
-      // 先只保留 1 個品種
       const catData = {
         ragdoll: {
           zh: "布偶貓 ☁️",
@@ -632,7 +632,12 @@
         currentLang = currentLang === "zh" ? "en" : "zh";
 
         document.querySelectorAll("[data-zh]").forEach((el) => {
-          el.innerText = el.getAttribute("data-" + currentLang);
+          const value = el.getAttribute("data-" + currentLang);
+          if (value && value.includes("<br>")) {
+            el.innerHTML = value;
+          } else {
+            el.innerText = value;
+          }
         });
 
         if (!document.getElementById("quiz").classList.contains("hidden")) {
@@ -649,9 +654,7 @@
       }
 
       function resetScores() {
-        scores = {
-          ragdoll: 0
-        };
+        scores = { ragdoll: 0 };
       }
 
       function startQuiz() {
@@ -697,7 +700,7 @@
 
         const percent = ((index + 1) / questions.length) * 100;
         document.getElementById("progress-bar").style.width = percent + "%";
-        document.getElementById("cat-runner").style.left = percent + "%;
+        document.getElementById("cat-runner").style.left = percent + "%";
 
         if (index === 0) {
           document.getElementById("prev-btn").classList.add("hidden");
@@ -751,17 +754,7 @@
       }
 
       function calculateResult() {
-        let maxKey = "ragdoll";
-        let maxScore = -Infinity;
-
-        for (const key in scores) {
-          if (scores[key] > maxScore) {
-            maxScore = scores[key];
-            maxKey = key;
-          }
-        }
-
-        currentCat = catData[maxKey];
+        currentCat = catData.ragdoll;
         showPage("result");
         updateResultUI();
       }
