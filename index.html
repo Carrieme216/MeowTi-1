@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MeowTI</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <style>
+      :root {
+        --yellow: #fde68a;
+        --soft-yellow: #fff8dc;
+        --orange: #f59e0b;
+        --brown: #5f4b32;
+        --card: #ffffff;
+        --tag-bg: #f5e7b5;
+        --tag-text: #6b5336;
+        --line: #ecd27a;
+        --option-bg: #fffdfa;
+        --option-border: #f1e5c8;
+        --shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "PingFang HK", "Microsoft JhengHei", sans-serif;
+        background: linear-gradient(180deg, #fff1b8 0%, #fff8dc 100%);
+        color: var(--brown);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 560px;
+        margin: 0 auto;
+        padding: 18px 16px 24px;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        position: sticky;
+        top: 10px;
+        z-index: 100;
+      }
+
+      .nav-icon {
+        font-size: 23px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 12px;
+        transition: 0.2s ease;
+      }
+
+      .nav-icon:hover {
+        background: var(--soft-yellow);
+      }
+
+      .lang-switch {
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        color: var(--orange);
+      }
+
+      .page-card {
+        background: var(--card);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        margin-top: 18px;
+        padding: 22px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .center {
+        text-align: center;
+      }
+
+      /* 首頁海報 */
+      .poster-shell {
+        background: #fff;
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        margin-top: 18px;
+        padding: 12px;
+      }
+
+      .poster-wrap {
+        position: relative;
+        width: 100%;
+        border-radius: 22px;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .poster-img {
+        width: 100%;
+        display: block;
+        border-radius: 22px;
+      }
+
+      /* 透明按鈕：蓋在圖片裡的「開始變貓」位置 */
+      .poster-start-hitbox {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 7%;
+        width: 72%;
+        height: 11%;
+        background: transparent;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+
+      .poster-start-hitbox:focus {
+        outline: 2px dashed rgba(245, 158, 11, 0.7);
+        outline-offset: 4px;
+      }
+
+      /* 載入影片 */
+      #loading-layer {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.98);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      #loading-video {
+        width: 100%;
+        max-width: 420px;
+        background: #fff;
+        border-radius: 22px;
+        display: block;
+      }
+
+      #loading-text {
+        margin-top: 14px;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--brown);
+        text-align: center;
+      }
+
+      /* 測試頁 */
+      .quiz-tip {
+        text-align: center;
+        font-size: 12px;
+        color: #9c9589;
+        margin: 0;
+        line-height: 1.6;
+      }
+
+      .progress-wrap {
+        width: 100%;
+        background: #fff3c4;
+        height: 10px;
+        border-radius: 999px;
+        position: relative;
+        margin: 0 0 18px;
+      }
+
+      .progress-bar {
+        width: 0%;
+        height: 100%;
+        background: var(--orange);
+        border-radius: 999px;
+        transition: 0.4s ease;
+      }
+
+      .cat-runner {
+        position: absolute;
+        top: -24px;
+        left: 0%;
+        transform: translateX(-50%);
+        transition: 0.4s ease;
+        font-size: 19px;
+      }
+
+      .progress-text {
+        text-align: center;
+        font-size: 14px;
+        color: var(--orange);
+        font-weight: 700;
+        margin-bottom: 14px;
+      }
+
+      .question-title {
+        text-align: center;
+        font-size: 26px;
+        font-weight: 800;
+        line-height: 1.45;
+        margin-bottom: 18px;
+        color: var(--brown);
+      }
+
+      .option-btn {
+        width: 100%;
+        display: block;
+        text-align: left;
+        background: var(--option-bg);
+        border: 1.5px solid var(--option-border);
+        border-radius: 18px;
+        padding: 16px 16px;
+        margin-bottom: 12px;
+        color: var(--brown);
+        font-size: 15px;
+        line-height: 1.6;
+        cursor: pointer;
+        transition: 0.18s ease;
+      }
+
+      .option-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+        background: #fffaf0;
+      }
+
+      .secondary-btn {
+        width: 100%;
+        background: #f8f8f8;
+        color: #9e9e9e;
+        border: 1px solid #ececec;
+        border-radius: 16px;
+        padding: 11px 14px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      /* 結果頁 */
+      .result-title {
+        text-align: center;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--brown);
+        margin-bottom: 8px;
+      }
+
+      .result-type {
+        text-align: center;
+        font-size: 34px;
+        font-weight: 800;
+        color: var(--orange);
+        margin-bottom: 14px;
+        line-height: 1.3;
+      }
+
+      .cat-img {
+        width: 100%;
+        max-width: 300px;
+        display: block;
+        margin: 0 auto;
+        border-radius: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .result-tags {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: 16px 0 10px;
+      }
+
+      .result-tag {
+        background: var(--tag-bg);
+        color: var(--tag-text);
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 13px;
+      }
+
+      .result-desc {
+        text-align: center;
+        line-height: 1.8;
+        font-size: 17px;
+        color: #6d5a3a;
+        margin-top: 8px;
+      }
+
+      .primary-btn {
+        width: 100%;
+        background: var(--orange);
+        color: #fff;
+        font-weight: 700;
+        border: none;
+        border-radius: 18px;
+        padding: 15px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 18px;
+        box-shadow: 0 10px 18px rgba(245, 158, 11, 0.22);
+      }
+
+      /* 百科頁 */
+      .wiki-card {
+        text-align: center;
+        padding: 8px 0 26px;
+        border-bottom: 3px solid var(--line);
+      }
+
+      .wiki-card:last-child {
+        border-bottom: none;
+        padding-bottom: 4px;
+      }
+
+      .wiki-name {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--brown);
+        margin: 16px 0 10px;
+      }
+
+      .wiki-desc {
+        margin-top: 12px;
+        line-height: 1.8;
+        color: #6d5a3a;
+        font-size: 16px;
+        padding: 0 10px;
+      }
+
+      /* Contact */
+      .contact-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: var(--soft-yellow);
+        margin: 20px auto 10px;
+        display: block;
+      }
+
+      @media (max-width: 640px) {
+        .container {
+          padding: 14px 12px 22px;
+        }
+
+        .page-card {
+          padding: 18px;
+          border-radius: 24px;
+        }
+
+        .poster-shell {
+          padding: 10px;
+          border-radius: 24px;
+        }
+
+        .question-title {
+          font-size: 23px;
+        }
+
+        .result-type {
+          font-size: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- loading mp4 -->
+    <div id="loading-layer" class="hidden">
+      <video id="loading-video" muted playsinline preload="auto">
+        <source src="loading-cat.mp4" type="video/mp4" />
+      </video>
+      <div
+        id="loading-text"
+        data-zh="正在進入喵喵世界..."
+        data-en="Entering the cat world..."
+      >
+        正在進入喵喵世界...
+      </div>
+    </div>
+
+    <div class="container">
+      <nav>
+        <button class="nav-icon" onclick="showPage('home')">🏠</button>
+        <button class="nav-icon" onclick="showPage('info')">📚</button>
+        <button class="nav-icon" onclick="showPage('contact')">✉️</button>
+        <div class="lang-switch" onclick="toggleLang()">EN / 中</div>
+      </nav>
+
+      <!-- HOME -->
+      <div id="home" class="page">
+        <div class="poster-shell">
+          <div class="poster-wrap">
+            <img
+              src="meow-cover.png"
+              class="poster-img"
+              alt="MeowTI Cover"
+            />
+            <button
+              class="poster-start-hitbox"
+              onclick="startQuiz()"
+              aria-label="開始變貓"
+              title="開始變貓"
+            ></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUIZ -->
+      <div id="quiz" class="page hidden">
+        <div class="page-card">
+          <p id="quiz-tip" class="quiz-tip">貓咪其實能聽懂你的聲音。</p>
+          <br />
+
+          <div class="progress-wrap">
+            <div id="progress-bar" class="progress-bar"></div>
+            <div id="cat-runner" class="cat-runner">🐱</div>
+          </div>
+
+          <div id="progress" class="progress-text">1 / 1</div>
+
+          <div id="question" class="question-title"></div>
+
+          <div id="options"></div>
+
+          <button
+            id="prev-btn"
+            class="secondary-btn hidden"
+            onclick="prevQuestion()"
+            data-zh="← 返回上一題"
+            data-en="← Previous Question"
+          >
+            ← 返回上一題
+          </button>
+        </div>
+      </div>
+
+      <!-- RESULT -->
+      <div id="result" class="page hidden">
+        <div class="page-card">
+          <div
+            class="result-title"
+            data-zh="你的貓咪人格是——"
+            data-en="Your cat result is—"
+          >
+            你的貓咪人格是——
+          </div>
+
+          <div id="type" class="result-type"></div>
+
+          <img id="catImg" class="cat-img" alt="result cat" />
+
+          <div id="result-tags" class="result-tags"></div>
+
+          <div id="desc" class="result-desc"></div>
+
+          <button
+            class="primary-btn"
+            onclick="location.reload()"
+            data-zh="再測一次"
+            data-en="Try Again"
+          >
+            再測一次
+          </button>
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div id="info" class="page hidden">
+        <div class="page-card">
+          <div
+            class="result-title"
+            data-zh="🐱 貓咪百科"
+            data-en="🐱 Cat Encyclopedia"
+          >
+            🐱 貓咪百科
+          </div>
+
+          <div id="encyclopedia-content"></div>
+
+          <button
+            class="primary-btn"
+            onclick="showPage('home')"
+            data-zh="返回首頁"
+            data-en="Back Home"
+          >
+            返回首頁
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div id="contact" class="page hidden">
+        <div class="page-card center">
+          <div
+            class="result-title"
+            data-zh="Contact Me"
+            data-en="Contact Me"
+          >
+            Contact Me
+          </div>
+
+          <img src="Carrie.jpg" alt="Carrie" class="contact-avatar" />
+
+          <h3 class="title is-5" style="margin-top: 4px">Carrie</h3>
+
+          <p>
+            📧 Email:
+            <a
+              href="mailto:1958842391@qq.com"
+              style="color: var(--orange); font-weight: 700"
+              >1958842391@qq.com</a
+            >
+          </p>
+
+          <p
+            data-zh="翻譯員 / 網頁開發者"
+            data-en="Translator / Website Developer"
+          >
+            翻譯員 / 網頁開發者
+          </p>
+
+          <button
+            class="secondary-btn"
+            onclick="showPage('home')"
+            data-zh="返回"
+            data-en="Back"
+          >
+            返回
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentLang = "zh";
+      let index = 0;
+      let answerHistory = [];
+      let currentCat = null;
+
+      let scores = {
+        ragdoll: 0
+      };
+
+      const quizTips = {
+        zh: [
+          "貓咪其實能聽懂你的聲音。",
+          "很多貓會把紙箱當成臨時安全屋。",
+          "有些貓不是高冷，只是慢熱。"
+        ],
+        en: [
+          "Cats can actually recognize your voice.",
+          "Many cats treat boxes like temporary safe houses.",
+          "Some cats are not cold, just slow to warm up."
+        ]
+      };
+
+      // 先只保留 1 題
+      const questions = [
+        {
+          qz: "如果你剛睡醒，發現自己真的變成一隻小貓，你第一件事會做什麼？",
+          qe: "If you wake up and realize you have turned into a kitten, what would you do first?",
+          opts: [
+            {
+              tz: "先找一個柔軟的地方窩著，再慢慢看世界",
+              ez: "Find a soft spot to curl up in and observe slowly",
+              add: { ragdoll: 1 }
+            },
+            {
+              tz: "去蹭蹭最近的人，看他會不會照顧我",
+              ez: "Rub against the nearest human and see if they care for me",
+              add: { ragdoll: 1 }
+            },
+            {
+              tz: "伸個懶腰，確認自己還是很可愛",
+              ez: "Stretch first and confirm that I am still adorable",
+              add: { ragdoll: 1 }
+            },
+            {
+              tz: "有點慌，但還是想找一個安心角落待著",
+              ez: "Feel a little nervous, but still look for a safe corner",
+              add: { ragdoll: 1 }
+            }
+          ]
+        }
+      ];
+
+      // 先只保留 1 個品種
+      const catData = {
+        ragdoll: {
+          zh: "布偶貓 ☁️",
+          en: "Ragdoll Cat ☁️",
+          desc_zh:
+            "你像一隻安靜、柔軟、讓人不自覺放低聲音的小貓。你不急著表態，也不喜歡太強烈的碰撞，但你有自己的溫度。你比較適合溫柔、穩定、慢慢靠近的世界。",
+          desc_en:
+            "You are like a soft, quiet cat that makes people lower their voice without noticing. You do not rush to react, and you prefer gentle, steady closeness.",
+          tags_zh: ["溫柔", "慢熱", "安靜", "治癒感"],
+          tags_en: ["Gentle", "Soft", "Quiet", "Comforting"],
+          img: "https://www.chiencattery.com.tw/wp-content/uploads/2023/11/Blue-Point-Mitted-Girl.jpg"
+        }
+      };
+
+      const encyclopediaData = [
+        {
+          key: "ragdoll",
+          zh: "布偶貓",
+          en: "Ragdoll Cat"
+        }
+      ];
+
+      function showPage(pageId) {
+        document.querySelectorAll(".page").forEach((p) => p.classList.add("hidden"));
+        document.getElementById(pageId).classList.remove("hidden");
+
+        if (pageId === "info") {
+          renderEncyclopedia();
+        }
+      }
+
+      function toggleLang() {
+        currentLang = currentLang === "zh" ? "en" : "zh";
+
+        document.querySelectorAll("[data-zh]").forEach((el) => {
+          el.innerText = el.getAttribute("data-" + currentLang);
+        });
+
+        if (!document.getElementById("quiz").classList.contains("hidden")) {
+          showQuestion();
+        }
+
+        if (!document.getElementById("result").classList.contains("hidden")) {
+          updateResultUI();
+        }
+
+        if (!document.getElementById("info").classList.contains("hidden")) {
+          renderEncyclopedia();
+        }
+      }
+
+      function resetScores() {
+        scores = {
+          ragdoll: 0
+        };
+      }
+
+      function startQuiz() {
+        const loader = document.getElementById("loading-layer");
+        const video = document.getElementById("loading-video");
+        const loadingText = document.getElementById("loading-text");
+
+        loadingText.innerText = loadingText.getAttribute("data-" + currentLang);
+
+        loader.classList.remove("hidden");
+
+        if (video) {
+          video.currentTime = 0;
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {});
+          }
+        }
+
+        setTimeout(() => {
+          index = 0;
+          answerHistory = [];
+          resetScores();
+          loader.classList.add("hidden");
+          showPage("quiz");
+          showQuestion();
+        }, 2200);
+      }
+
+      function updateQuizTip() {
+        const pool = quizTips[currentLang];
+        const text = pool[Math.floor(Math.random() * pool.length)];
+        document.getElementById("quiz-tip").innerText = text;
+      }
+
+      function showQuestion() {
+        const q = questions[index];
+        document.getElementById("question").innerText =
+          currentLang === "zh" ? q.qz : q.qe;
+
+        document.getElementById("progress").innerText =
+          `${index + 1} / ${questions.length}`;
+
+        const percent = ((index + 1) / questions.length) * 100;
+        document.getElementById("progress-bar").style.width = percent + "%";
+        document.getElementById("cat-runner").style.left = percent + "%;
+
+        if (index === 0) {
+          document.getElementById("prev-btn").classList.add("hidden");
+        } else {
+          document.getElementById("prev-btn").classList.remove("hidden");
+        }
+
+        let html = "";
+        q.opts.forEach((opt, i) => {
+          const text = currentLang === "zh" ? opt.tz : opt.ez;
+          html += `<button class="option-btn" onclick="answer(${i})">${text}</button>`;
+        });
+
+        document.getElementById("options").innerHTML = html;
+        updateQuizTip();
+      }
+
+      function addScores(addObj) {
+        for (const key in addObj) {
+          scores[key] += addObj[key];
+        }
+      }
+
+      function subtractScores(addObj) {
+        for (const key in addObj) {
+          scores[key] -= addObj[key];
+        }
+      }
+
+      function answer(optionIndex) {
+        const selected = questions[index].opts[optionIndex];
+        addScores(selected.add);
+        answerHistory.push(optionIndex);
+        index++;
+
+        if (index < questions.length) {
+          showQuestion();
+        } else {
+          calculateResult();
+        }
+      }
+
+      function prevQuestion() {
+        if (index > 0) {
+          index--;
+          const prevOptionIndex = answerHistory.pop();
+          const prevOption = questions[index].opts[prevOptionIndex];
+          subtractScores(prevOption.add);
+          showQuestion();
+        }
+      }
+
+      function calculateResult() {
+        let maxKey = "ragdoll";
+        let maxScore = -Infinity;
+
+        for (const key in scores) {
+          if (scores[key] > maxScore) {
+            maxScore = scores[key];
+            maxKey = key;
+          }
+        }
+
+        currentCat = catData[maxKey];
+        showPage("result");
+        updateResultUI();
+      }
+
+      function updateResultUI() {
+        if (!currentCat) return;
+
+        document.getElementById("type").innerText = currentCat[currentLang];
+        document.getElementById("desc").innerText =
+          currentCat["desc_" + currentLang];
+        document.getElementById("catImg").src = currentCat.img;
+
+        const tags = currentCat["tags_" + currentLang];
+        document.getElementById("result-tags").innerHTML = tags
+          .map((tag) => `<span class="result-tag">${tag}</span>`)
+          .join("");
+      }
+
+      function renderEncyclopedia() {
+        let html = "";
+
+        encyclopediaData.forEach((item) => {
+          const data = catData[item.key];
+          const name = currentLang === "zh" ? item.zh : item.en;
+
+          html += `
+            <div class="wiki-card">
+              <img src="${data.img}" class="cat-img" alt="${name}">
+              <div class="wiki-name">${name}</div>
+              <div class="result-tags">
+                ${data["tags_" + currentLang]
+                  .map((tag) => `<span class="result-tag">${tag}</span>`)
+                  .join("")}
+              </div>
+              <div class="wiki-desc">${data["desc_" + currentLang]}</div>
+            </div>
+          `;
+        });
+
+        document.getElementById("encyclopedia-content").innerHTML = html;
+      }
+    </script>
+  </body>
+</html>
