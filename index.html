@@ -76,6 +76,7 @@
     .creator-note{text-align:center;color:var(--muted);font-size:13px;line-height:1.85;margin-top:24px}
     .creator-note a{color:var(--orange-deep);text-decoration:none;font-weight:800}
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+    .topbar-left{display:flex;align-items:center;gap:8px}
     .mini-btn{
       width:38px;height:38px;border-radius:50%;border:1px solid #eedfbe;background:rgba(255,255,255,.92);
       color:var(--brown);font-size:18px;cursor:pointer
@@ -177,7 +178,10 @@
   <div class="app">
     <section id="home" class="page-card home-page">
       <div class="home-inner">
-        <div class="top-right">
+        <div class="topbar" style="margin-bottom:22px">
+          <div class="topbar-left">
+            <button class="mini-btn" onclick="showGallery()" title="看看别的小猫">≡</button>
+          </div>
           <div class="lang-group">
             <button class="lang-btn" data-lang="zh-Hant" onclick="setLang('zh-Hant')">繁</button>
             <button class="lang-btn active" data-lang="zh-Hans" onclick="setLang('zh-Hans')">简</button>
@@ -194,7 +198,10 @@
 
     <section id="quiz" class="page-card quiz-page hidden">
       <div class="topbar">
-        <button class="mini-btn" onclick="goHome()">×</button>
+        <div class="topbar-left">
+          <button class="mini-btn" onclick="showGallery()" title="看看别的小猫">≡</button>
+          <button class="mini-btn" onclick="goHome()">×</button>
+        </div>
         <div class="brand">MeowTI</div>
         <div class="lang-group">
           <button class="lang-btn" data-lang="zh-Hant" onclick="setLang('zh-Hant')">繁</button>
@@ -216,7 +223,10 @@
 
     <section id="result" class="page-card result-page hidden">
       <div class="topbar">
-        <button class="mini-btn" onclick="goHome()">×</button>
+        <div class="topbar-left">
+          <button class="mini-btn" onclick="showGallery()" title="看看别的小猫">≡</button>
+          <button class="mini-btn" onclick="goHome()">×</button>
+        </div>
         <div class="brand">MeowTI</div>
         <div class="lang-group">
           <button class="lang-btn" data-lang="zh-Hant" onclick="setLang('zh-Hant')">繁</button>
@@ -260,7 +270,9 @@
 
     <section id="gallery" class="page-card gallery-page hidden">
       <div class="topbar">
-        <button class="mini-btn" onclick="showResult()">←</button>
+        <div class="topbar-left">
+          <button class="mini-btn" onclick="showResult()">←</button>
+        </div>
         <div class="brand">MeowTI</div>
         <div class="lang-group">
           <button class="lang-btn" data-lang="zh-Hant" onclick="setLang('zh-Hant')">繁</button>
@@ -297,11 +309,11 @@
       "zh-Hans": {
         homeBrand: "测测你的 MeowTI",
         homeTitle: "咪的天，<br>睡醒变成小猫了！",
-        homeSubtitle: "先默认自己已经长出耳朵和尾巴，再来看看你会是哪一种小猫。",
+        homeSubtitle: "",
         startBtn: "开始变猫",
         creatorPrefix: "任何反馈和建议请",
         creatorHandle: "@呆呆滴滴嗒嗒",
-        loading: "正在进入喵喵世界…",
+        loading: "正在进入喵喵时间…",
         prevQuestion: "← 返回上一题",
         resultHead: "你的 MeowTi is—",
         mixTitle: "你的猫格组成",
@@ -322,7 +334,7 @@
         startBtn: "Start Becoming a Cat",
         creatorPrefix: "Feedback or suggestions?",
         creatorHandle: "@carrieme216",
-        loading: "Entering the meow meow world…",
+        loading: "Entering meow meow time…",
         prevQuestion: "← Previous Question",
         resultHead: "Your MeowTi is—",
         mixTitle: "Your Meow Composition",
@@ -878,9 +890,8 @@
       document.getElementById('homeTitle').innerHTML = currentLang === 'en' ? t.homeTitle : ensureCN(t.homeTitle);
       document.getElementById('homeSubtitle').innerText = currentLang === 'en' ? t.homeSubtitle : ensureCN(t.homeSubtitle);
       document.getElementById('startBtn').innerText = currentLang === 'en' ? t.startBtn : ensureCN(t.startBtn);
-      const prefix = currentLang === 'en' ? t.creatorPrefix : ensureCN(t.creatorPrefix);
       const handle = currentLang === 'en' ? t.creatorHandle : ensureCN(t.creatorHandle);
-      document.getElementById('homeCreator').innerHTML = `${prefix} <a href="${getCreatorURL()}" target="_blank">${handle}</a>`;
+      document.getElementById('homeCreator').innerHTML = `MeowTI · <a href="${getCreatorURL()}" target="_blank">${handle}</a>`;
       document.getElementById('loadingText').innerText = currentLang === 'en' ? t.loading : ensureCN(t.loading);
     }
 
@@ -1039,14 +1050,13 @@
         rows.appendChild(row);
       });
 
-      document.getElementById('shareFooter').innerText = currentLang === 'en' ? t.shareFooter : ensureCN(t.shareFooter);
+      document.getElementById('shareFooter').innerHTML = `MeowTI · <a href="${getCreatorURL()}" target="_blank">${currentLang === 'en' ? t.creatorHandle : ensureCN(t.creatorHandle)}</a>`;
       document.getElementById('shareBtn').innerText = currentLang === 'en' ? t.shareBtn : ensureCN(t.shareBtn);
       document.getElementById('retryBtn').innerText = currentLang === 'en' ? t.retryBtn : ensureCN(t.retryBtn);
       document.getElementById('galleryLink').innerText = currentLang === 'en' ? t.galleryLink : ensureCN(t.galleryLink);
 
-      const prefix = currentLang === 'en' ? t.creatorPrefix : ensureCN(t.creatorPrefix);
       const handle = currentLang === 'en' ? t.creatorHandle : ensureCN(t.creatorHandle);
-      document.getElementById('resultCreator').innerHTML = `${prefix} <a href="${getCreatorURL()}" target="_blank">${handle}</a>`;
+      document.getElementById('resultCreator').innerHTML = `MeowTI · <a href="${getCreatorURL()}" target="_blank">${handle}</a>`;
     }
 
     function toggleDetail(){
@@ -1090,7 +1100,7 @@
       renderGallery();
     }
 
-    async function saveShareImage(){
+    async async function saveShareImage(){
       const capture = document.getElementById('shareCapture');
       const detail = document.getElementById('detailWrap');
       const wasOpen = !detail.classList.contains('hidden');
