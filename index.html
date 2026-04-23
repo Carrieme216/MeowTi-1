@@ -164,6 +164,11 @@
       .question-title{font-size:24px}
       .result-name{font-size:30px}
     }
+  
+    /* result page cleanup */
+    #shareFooter,#galleryLink,#resultCreator{display:none !important;}
+    #resultPage a{color:var(--orange-deep) !important;text-decoration:none;}
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.min.js"></script>
 </head>
@@ -321,11 +326,11 @@
         detailClose: "收起完整分析",
         shareBtn: "分享给好友",
         retryBtn: "再测一次",
-        galleryLink: "看看别的小猫？",
+        galleryLink: "",
         galleryPrev: "上一只",
         galleryNext: "下一只",
         galleryBack: "返回主页",
-        shareFooter: "MeowTI · @呆呆滴滴嗒嗒"
+        shareFooter: ""
       },
       "en": {
         homeBrand: "Test Your MeowTI",
@@ -346,7 +351,7 @@
         galleryPrev: "Previous",
         galleryNext: "Next",
         galleryBack: "Back Home",
-        shareFooter: "MeowTI · @carrieme216"
+        shareFooter: ""
       }
     };
 
