@@ -892,7 +892,7 @@
       document.getElementById('startBtn').innerText = currentLang === 'en' ? t.startBtn : ensureCN(t.startBtn);
       const handle = currentLang === 'en' ? t.creatorHandle : ensureCN(t.creatorHandle);
       document.getElementById('homeCreator').innerHTML = `MeowTI · <a href="${getCreatorURL()}" target="_blank">${handle}</a>`;
-      document.getElementById('loadingText').innerText = currentLang === 'en' ? t.loading : ensureCN(t.loading);
+      document.getElementById('loading-text').innerText = currentLang === 'en' ? t.loading : ensureCN(t.loading);
     }
 
     function startQuiz(){
@@ -1100,7 +1100,7 @@
       renderGallery();
     }
 
-    async async function saveShareImage(){
+    async function saveShareImage(){
       const capture = document.getElementById('shareCapture');
       const detail = document.getElementById('detailWrap');
       const wasOpen = !detail.classList.contains('hidden');
