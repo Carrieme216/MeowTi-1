@@ -1,1299 +1,1109 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MeowTI</title>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MeowTI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --orange:#f4a11a;
+      --orange-deep:#e8930b;
+      --brown:#6b4f35;
+      --text:#70573d;
+      --muted:#9a8b78;
+      --cream:#fffaf0;
+      --card:rgba(255,253,246,0.92);
+      --card-border:#f3e6cb;
+      --tag-bg:#fff1cb;
+      --tag-text:#8c6844;
+      --soft:#f8ecd1;
+      --shadow:0 12px 28px rgba(141,105,49,0.09);
+      --font-cn:"M PLUS Rounded 1c","PingFang SC","Microsoft YaHei",sans-serif;
+      --font-en:"Fredoka","Nunito",sans-serif;
+      --font-body:"Nunito","M PLUS Rounded 1c","PingFang SC","Microsoft YaHei",sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      background:linear-gradient(rgba(255,248,232,0.72),rgba(255,248,232,0.86));
+      color:var(--text);
+      font-family:var(--font-body);
+    }
+    .cn{font-family:var(--font-cn)}
+    .en{font-family:var(--font-en)}
+    .hidden{display:none!important}
+    .app{max-width:680px;margin:0 auto;padding:16px 14px 34px}
+    .page-card{
+      background:var(--card);
+      border:1px solid var(--card-border);
+      border-radius:34px;
+      box-shadow:var(--shadow);
+      padding:26px 20px 24px;
+      backdrop-filter:blur(8px);
+    }
+    .home-page{
+      min-height:calc(100vh - 32px);
+      display:flex;align-items:center;justify-content:center;text-align:center;
+      padding:36px 14px 44px;
+      background:url("background.png") center/cover no-repeat;
+      border-radius:34px;
+    }
+    .home-inner{width:100%;max-width:520px}
+    .top-right{display:flex;justify-content:flex-end;margin-bottom:22px}
+    .lang-group{
+      display:inline-flex;gap:6px;padding:6px;background:rgba(255,255,255,.52);
+      border:1px solid rgba(255,255,255,.65);border-radius:999px;backdrop-filter:blur(8px)
+    }
+    .lang-btn{
+      border:none;background:transparent;color:var(--brown);font-weight:800;
+      font-size:13px;padding:7px 12px;border-radius:999px;cursor:pointer;transition:.18s ease
+    }
+    .lang-btn.active{background:rgba(255,255,255,.95);color:var(--orange-deep);box-shadow:0 4px 10px rgba(0,0,0,.05)}
+    .home-brand{font-size:16px;font-weight:800;color:#b88a2d;letter-spacing:.3px;margin-bottom:10px}
+    .home-title{font-size:44px;line-height:1.22;font-weight:800;color:var(--brown);margin:0 0 12px}
+    .home-subtitle{font-size:15px;line-height:1.8;color:#8f7a61;margin:0 0 34px}
+    .primary-btn{
+      width:100%;border:none;border-radius:20px;padding:18px 18px;background:linear-gradient(180deg,#f7ac26 0%,var(--orange) 100%);
+      color:#fff;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 14px 26px rgba(244,161,26,.22);
+      transition:.2s ease; margin-top:8px; margin-bottom:34px;
+    }
+    .primary-btn:hover{transform:translateY(-2px);box-shadow:0 18px 32px rgba(244,161,26,.28)}
+    .primary-btn:active{transform:translateY(0)}
+    .creator-note{text-align:center;color:var(--muted);font-size:13px;line-height:1.85;margin-top:24px}
+    .creator-note a{color:var(--orange-deep);text-decoration:none;font-weight:800}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+    .mini-btn{
+      width:38px;height:38px;border-radius:50%;border:1px solid #eedfbe;background:rgba(255,255,255,.92);
+      color:var(--brown);font-size:18px;cursor:pointer
+    }
+    .brand{flex:1;text-align:center;font-weight:700;color:var(--brown);font-size:15px;font-family:var(--font-en)}
+    .quiz-page,.result-page,.gallery-page{
+      background:
+        linear-gradient(rgba(255,248,232,0.66),rgba(255,248,232,0.82)),
+        url("meowti-inner-bg.png") center/cover no-repeat;
+      border-radius:34px;
+    }
+    .quiz-tip{text-align:center;font-size:12px;color:#9c9589;line-height:1.7;min-height:20px;margin:0}
+    .progress-wrap{width:100%;height:10px;background:#fff3c4;border-radius:999px;position:relative;margin:0 0 18px}
+    .progress-bar{width:0;height:100%;background:var(--orange);border-radius:999px;transition:.35s ease}
+    .cat-runner{position:absolute;top:-23px;left:0;transform:translateX(-50%);font-size:19px;transition:.35s ease}
+    .progress-text{text-align:center;font-size:14px;color:var(--orange-deep);font-weight:800;margin-bottom:16px}
+    .question-title{text-align:center;font-size:28px;line-height:1.45;color:var(--brown);font-weight:800;margin:0 0 18px}
+    .option-btn{
+      width:100%;text-align:left;border:1.5px solid #f1e5c8;background:rgba(255,255,255,.94);color:var(--brown);
+      border-radius:20px;padding:20px 18px;margin-bottom:16px;font-size:15px;line-height:1.72;cursor:pointer;
+      box-shadow:0 2px 8px rgba(0,0,0,.03);transition:.2s ease
+    }
+    .option-btn:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.08);background:#fffaf0;border-color:#edcf88}
+    .option-btn.selected{background:#fff4d8;border-color:var(--orange);box-shadow:0 10px 20px rgba(244,161,26,.14)}
+    .secondary-btn{
+      width:100%;background:#f8f8f8;color:#8e8e8e;border:1px solid #ececec;border-radius:16px;padding:12px 14px;cursor:pointer;
+      font-size:14px;transition:.18s ease;box-shadow:0 2px 8px rgba(0,0,0,.02)
+    }
+    .secondary-btn:hover{background:#f3f3f3;transform:translateY(-1px)}
+    .main-card,.mix-card,.gallery-card{
+      background:rgba(255,255,255,.84);border:1px solid #f3e8d3;border-radius:24px;padding:20px 16px;
+      box-shadow:0 6px 20px rgba(141,105,49,.05);margin-bottom:16px
+    }
+    .result-head{text-align:center;color:var(--brown);font-weight:700;font-size:16px;margin-bottom:8px}
+    .result-name{text-align:center;font-size:34px;font-weight:800;color:var(--orange-deep);line-height:1.3;margin-bottom:14px}
+    .cat-img{display:block;width:100%;max-width:310px;aspect-ratio:4/3;object-fit:cover;border-radius:24px;margin:0 auto 16px;border:1px solid #f5e7ca;box-shadow:0 8px 22px rgba(141,105,49,.1);background:#fff}
+    .tags{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:12px}
+    .tag{background:var(--tag-bg);color:var(--tag-text);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700}
+    .result-hook{text-align:center;font-size:15px;line-height:1.8;color:var(--brown);font-weight:700;margin:2px 0 12px}
+    .short-line{text-align:center;color:var(--muted);font-size:15px;margin-bottom:14px}
+    .desc-short,.desc-full,.gallery-desc{font-size:15.5px;line-height:1.95;color:var(--text)}
+    .desc-full p,.gallery-desc p{margin:0 0 12px}
+    .center{text-align:center}
+    .detail-toggle{
+      display:inline-block;border:1px solid #f0dfbe;background:rgba(255,255,255,.96);color:var(--brown);border-radius:16px;padding:10px 14px;
+      font-size:14px;font-weight:800;cursor:pointer;transition:.2s ease;margin-top:4px
+    }
+    .detail-toggle:hover{transform:translateY(-1px);background:#fffdfa}
+    .detail-wrap{margin-top:14px;padding-top:14px;border-top:1px dashed #ecdcb8}
+    .mix-title{font-size:18px;font-weight:800;color:var(--brown);margin-bottom:12px;text-align:center}
+    .mix-row{margin-bottom:12px}
+    .mix-row:last-child{margin-bottom:0}
+    .mix-label{display:flex;justify-content:space-between;gap:10px;font-size:14px;margin-bottom:6px;color:var(--brown);font-weight:700}
+    .bar-bg{width:100%;height:10px;background:#f6ecd7;border-radius:999px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#f6b33a,var(--orange))}
+    .actions{margin-top:18px}
+    .share-btn,.retry-btn,.gallery-link{
+      width:100%;display:block;text-align:center;border-radius:18px;font-weight:800;transition:.2s ease;cursor:pointer;text-decoration:none
+    }
+    .share-btn{border:1px solid #f0dfbe;background:rgba(255,255,255,.96);color:var(--brown);padding:14px;margin-bottom:12px}
+    .retry-btn{border:none;background:linear-gradient(180deg,#f7ac26 0%,var(--orange) 100%);color:white;padding:16px;margin-bottom:12px;box-shadow:0 10px 24px rgba(244,161,26,.24)}
+    .gallery-link{color:var(--muted);font-size:14px;padding:6px 0}
+    .share-btn:hover,.retry-btn:hover,.gallery-link:hover{transform:translateY(-2px)}
+    .gallery-title{font-size:24px;font-weight:800;color:var(--brown);text-align:center;margin:0 0 12px}
+    .gallery-short{text-align:center;color:var(--muted);font-size:15px;margin-bottom:10px}
+    .gallery-nav{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px}
+    .mini-secondary{width:auto;padding:10px 18px}
+    .dots{display:flex;gap:8px;align-items:center;justify-content:center}
+    .dot{width:9px;height:9px;border-radius:999px;background:#e8ddc0;display:inline-block}
+    .dot.active{background:var(--orange)}
+    #loading-layer{
+      position:fixed;inset:0;background:rgba(255,255,255,.98);z-index:9999;display:flex;justify-content:center;align-items:center;flex-direction:column;padding:20px
+    }
+    #loading-video{width:100%;max-width:420px;background:#fff;border-radius:22px;display:block}
+    #loading-text{margin-top:14px;font-size:15px;font-weight:700;color:var(--brown);text-align:center}
+    #shareCapture{
+      background:rgba(255,253,246,.98);border:1px solid #f3e6cb;border-radius:28px;padding:18px 16px 16px;margin-bottom:12px;
+    }
+    .share-footer{text-align:center;color:var(--muted);font-size:13px;line-height:1.8;margin-top:14px}
+    @media (max-width:640px){
+      .app{padding:12px 12px 24px}
+      .page-card{padding:24px 18px 22px}
+      .home-page{padding:30px 12px 40px}
+      .home-title{font-size:36px}
+      .question-title{font-size:24px}
+      .result-name{font-size:30px}
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.min.js"></script>
+</head>
+<body>
+  <div id="loading-layer" class="hidden">
+    <video id="loading-video" muted playsinline preload="auto">
+      <source src="loading-cat.mp4" type="video/mp4" />
+    </video>
+    <div id="loading-text"></div>
+  </div>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Ma+Shan+Zheng&display=swap"
-      rel="stylesheet"
-    />
-
-    <style>
-      :root {
-        --orange: #f59e0b;
-        --brown: #5f4b32;
-        --card: rgba(255, 255, 255, 0.9);
-        --tag-bg: #f5e7b5;
-        --tag-text: #6b5336;
-        --option-bg: rgba(255, 255, 255, 0.92);
-        --option-border: #f1e5c8;
-        --muted: #948872;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        font-family: "LXGW WenKai TC", "Ma Shan Zheng", "PingFang HK",
-          "Microsoft JhengHei", cursive, sans-serif;
-        color: var(--brown);
-        min-height: 100vh;
-        background: linear-gradient(
-          rgba(255, 248, 220, 0.65),
-          rgba(255, 248, 220, 0.78)
-        );
-      }
-
-      .container {
-        max-width: 620px;
-        margin: 0 auto;
-        padding: 18px 16px 28px;
-      }
-
-      .hidden {
-        display: none !important;
-      }
-
-      .page-card {
-        background: var(--card);
-        backdrop-filter: blur(2px);
-        border-radius: 32px;
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(229, 231, 235, 0.9);
-        margin-top: 18px;
-        padding: 34px 28px;
-      }
-
-      .center {
-        text-align: center;
-      }
-
-      .creator-note {
-        width: 100%;
-        text-align: center;
-        margin-top: 14px;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.7;
-      }
-
-      .creator-note a {
-        color: var(--orange);
-        text-decoration: none;
-        font-weight: 700;
-      }
-
-      .top-mini-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 14px;
-      }
-
-      .mini-btn {
-        background: none;
-        border: none;
-        color: var(--brown);
-        font-size: 20px;
-        cursor: pointer;
-        padding: 4px 6px;
-      }
-
-      .mini-title {
-        font-weight: 700;
-        font-size: 15px;
-        color: var(--brown);
-        flex: 1;
-        text-align: center;
-      }
-
-      .lang-switch {
-        background: none;
-        border: none;
-        color: var(--orange);
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        padding: 4px 6px;
-      }
-
-      .home-page {
-        min-height: calc(100vh - 46px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 30px 6px 36px;
-        background:
-          linear-gradient(rgba(255, 248, 220, 0.38), rgba(255, 248, 220, 0.55)),
-          url("background.png") center/cover no-repeat;
-        border-radius: 32px;
-      }
-
-      .home-inner {
-        width: 100%;
-      }
-
-      .home-top {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 18px;
-      }
-
-      .home-brand {
-        font-size: 16px;
-        font-weight: 700;
-        color: #b88a2d;
-        letter-spacing: 0.4px;
-        margin-bottom: 16px;
-      }
-
-      .home-title {
-        font-size: 46px;
-        font-weight: 700;
-        line-height: 1.22;
-        color: var(--brown);
-        margin-bottom: 28px;
-      }
-
-      .primary-btn {
-        width: 100%;
-        background: var(--orange);
-        color: #fff;
-        font-weight: 700;
-        border: none;
-        border-radius: 18px;
-        padding: 16px;
-        cursor: pointer;
-        font-size: 16px;
-        box-shadow: 0 10px 18px rgba(245, 158, 11, 0.22);
-        transition: 0.18s ease;
-      }
-
-      .primary-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 22px rgba(245, 158, 11, 0.28);
-        filter: brightness(1.02);
-      }
-
-      .secondary-btn {
-        width: 100%;
-        background: #f8f8f8;
-        color: #8e8e8e;
-        border: 1px solid #ececec;
-        border-radius: 16px;
-        padding: 12px 14px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: 0.18s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-      }
-
-      .secondary-btn:hover {
-        background: #f3f3f3;
-        transform: translateY(-1px);
-      }
-
-      .share-btn {
-        width: 100%;
-        background: rgba(255, 255, 255, 0.96);
-        color: var(--brown);
-        font-weight: 700;
-        border: 1px solid #efe3bf;
-        border-radius: 16px;
-        padding: 13px 14px;
-        cursor: pointer;
-        font-size: 15px;
-        transition: 0.18s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-        margin-bottom: 12px;
-      }
-
-      .share-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
-        background: #fffaf0;
-      }
-
-      #loading-layer {
-        position: fixed;
-        inset: 0;
-        background: rgba(255, 255, 255, 0.98);
-        z-index: 9999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        padding: 20px;
-      }
-
-      #loading-video {
-        width: 100%;
-        max-width: 420px;
-        background: #fff;
-        border-radius: 22px;
-        display: block;
-      }
-
-      #loading-text {
-        margin-top: 14px;
-        font-size: 15px;
-        font-weight: 700;
-        color: var(--brown);
-        text-align: center;
-      }
-
-      .quiz-tip {
-        text-align: center;
-        font-size: 12px;
-        color: #9c9589;
-        margin: 0;
-        line-height: 1.6;
-        min-height: 20px;
-      }
-
-      .progress-wrap {
-        width: 100%;
-        background: #fff3c4;
-        height: 10px;
-        border-radius: 999px;
-        position: relative;
-        margin: 0 0 18px;
-      }
-
-      .progress-bar {
-        width: 0%;
-        height: 100%;
-        background: var(--orange);
-        border-radius: 999px;
-        transition: 0.4s ease;
-      }
-
-      .cat-runner {
-        position: absolute;
-        top: -24px;
-        left: 0%;
-        transform: translateX(-50%);
-        transition: 0.4s ease;
-        font-size: 19px;
-      }
-
-      .progress-text {
-        text-align: center;
-        font-size: 14px;
-        color: var(--orange);
-        font-weight: 700;
-        margin-bottom: 14px;
-      }
-
-      .question-title {
-        text-align: center;
-        font-size: 26px;
-        font-weight: 800;
-        line-height: 1.45;
-        margin-bottom: 18px;
-        color: var(--brown);
-      }
-
-      .option-btn {
-        width: 100%;
-        display: block;
-        text-align: left;
-        background: var(--option-bg);
-        border: 1.5px solid var(--option-border);
-        border-radius: 18px;
-        padding: 18px 18px;
-        margin-bottom: 14px;
-        color: var(--brown);
-        font-size: 15px;
-        line-height: 1.65;
-        cursor: pointer;
-        transition: 0.18s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-      }
-
-      .option-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
-        background: #fffaf0;
-      }
-
-      .result-title {
-        text-align: center;
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--brown);
-        margin-bottom: 8px;
-      }
-
-      .result-type {
-        text-align: center;
-        font-size: 34px;
-        font-weight: 800;
-        color: var(--orange);
-        margin-bottom: 14px;
-        line-height: 1.3;
-      }
-
-      .cat-img {
-        width: 100%;
-        max-width: 300px;
-        display: block;
-        margin: 0 auto;
-        border-radius: 20px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        object-fit: cover;
-        aspect-ratio: 4 / 3;
-        background: rgba(255, 255, 255, 0.85);
-      }
-
-      .result-tags {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-        margin: 16px 0 10px;
-      }
-
-      .result-tag {
-        background: var(--tag-bg);
-        color: var(--tag-text);
-        padding: 8px 16px;
-        border-radius: 999px;
-        font-size: 13px;
-      }
-
-      .sub-cat-line {
-        text-align: center;
-        margin-top: 10px;
-        margin-bottom: 2px;
-        color: var(--muted);
-        font-size: 15px;
-        line-height: 1.7;
-      }
-
-      .result-desc {
-        text-align: center;
-        line-height: 1.85;
-        font-size: 17px;
-        color: #6d5a3a;
-        margin-top: 22px;
-        margin-bottom: 22px;
-        white-space: pre-line;
-      }
-
-      .result-extra-link {
-        display: inline-block;
-        margin-top: 14px;
-        color: var(--muted);
-        font-size: 14px;
-        text-decoration: none;
-        cursor: pointer;
-        transition: 0.18s ease;
-      }
-
-      .result-extra-link:hover {
-        color: var(--brown);
-      }
-
-      .wiki-card {
-        text-align: center;
-        padding: 10px 0 30px;
-      }
-
-      .wiki-name {
-        font-size: 24px;
-        font-weight: 800;
-        color: var(--brown);
-        margin: 16px 0 10px;
-      }
-
-      .wiki-short {
-        text-align: center;
-        color: var(--muted);
-        font-size: 15px;
-        margin-top: 8px;
-        margin-bottom: 4px;
-      }
-
-      .wiki-desc {
-        margin-top: 18px;
-        color: #6d5a3a;
-        font-size: 16px;
-        padding: 0 12px;
-        text-align: left;
-      }
-
-      .wiki-desc p {
-        margin: 0 0 14px;
-        line-height: 1.9;
-      }
-
-      .wiki-desc p:last-child {
-        margin-bottom: 0;
-      }
-
-      .dots {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .dot {
-        width: 9px;
-        height: 9px;
-        border-radius: 999px;
-        background: #e8ddc0;
-        display: inline-block;
-      }
-
-      .dot.active {
-        background: var(--orange);
-      }
-
-      @media (max-width: 640px) {
-        .container {
-          padding: 14px 12px 22px;
-        }
-        .page-card {
-          padding: 28px 22px;
-          border-radius: 26px;
-        }
-        .home-title {
-          font-size: 38px;
-        }
-        .question-title {
-          font-size: 23px;
-        }
-        .result-type {
-          font-size: 30px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="loading-layer" class="hidden">
-      <video id="loading-video" muted playsinline preload="auto">
-        <source src="loading-cat.mp4" type="video/mp4" />
-      </video>
-      <div id="loading-text"></div>
-    </div>
-
-    <div class="container">
-      <div id="home" class="page home-page">
-        <div class="home-inner">
-          <div class="home-top">
-            <button class="lang-switch" onclick="toggleLang()">EN / 中</button>
+  <div class="app">
+    <section id="home" class="page-card home-page">
+      <div class="home-inner">
+        <div class="top-right">
+          <div class="lang-group">
+            <button class="lang-btn" data-lang="zh-Hant" onclick="setLang('zh-Hant')">繁</button>
+            <button class="lang-btn active" data-lang="zh-Hans" onclick="setLang('zh-Hans')">简</button>
+            <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
           </div>
-          <div id="home-brand" class="home-brand"></div>
-          <div id="home-title" class="home-title"></div>
-          <button id="start-btn" class="primary-btn" onclick="startQuiz()"></button>
-          <div id="home-creator" class="creator-note"></div>
+        </div>
+        <div id="homeBrand" class="home-brand cn"></div>
+        <h1 id="homeTitle" class="home-title cn"></h1>
+        <p id="homeSubtitle" class="home-subtitle cn"></p>
+        <button id="startBtn" class="primary-btn cn" onclick="startQuiz()"></button>
+        <div id="homeCreator" class="creator-note cn"></div>
+      </div>
+    </section>
+
+    <section id="quiz" class="page-card quiz-page hidden">
+      <div class="topbar">
+        <button class="mini-btn" onclick="goHome()">×</button>
+        <div class="brand">MeowTI</div>
+        <div class="lang-group">
+          <button class="lang-btn" data-lang="zh-Hant" onclick="setLang('zh-Hant')">繁</button>
+          <button class="lang-btn active" data-lang="zh-Hans" onclick="setLang('zh-Hans')">简</button>
+          <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+        </div>
+      </div>
+      <p id="quizTip" class="quiz-tip cn"></p>
+      <br>
+      <div class="progress-wrap">
+        <div id="progressBar" class="progress-bar"></div>
+        <div id="catRunner" class="cat-runner">🐱</div>
+      </div>
+      <div id="progressText" class="progress-text en"></div>
+      <h2 id="questionTitle" class="question-title cn"></h2>
+      <div id="optionsBox"></div>
+      <button id="prevBtn" class="secondary-btn cn hidden" onclick="prevQuestion()"></button>
+    </section>
+
+    <section id="result" class="page-card result-page hidden">
+      <div class="topbar">
+        <button class="mini-btn" onclick="goHome()">×</button>
+        <div class="brand">MeowTI</div>
+        <div class="lang-group">
+          <button class="lang-btn" data-lang="zh-Hant" onclick="setLang('zh-Hant')">繁</button>
+          <button class="lang-btn active" data-lang="zh-Hans" onclick="setLang('zh-Hans')">简</button>
+          <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
         </div>
       </div>
 
-      <div id="quiz" class="page hidden">
-        <div class="page-card">
-          <div class="top-mini-bar">
-            <button class="mini-btn" onclick="showPage('home')">×</button>
-            <div class="mini-title">MeowTI</div>
-            <button class="lang-switch" onclick="toggleLang()">EN / 中</button>
-          </div>
-
-          <p id="quiz-tip" class="quiz-tip"></p>
-          <br />
-
-          <div class="progress-wrap">
-            <div id="progress-bar" class="progress-bar"></div>
-            <div id="cat-runner" class="cat-runner">🐱</div>
-          </div>
-
-          <div id="progress" class="progress-text"></div>
-          <div id="question" class="question-title"></div>
-          <div id="options"></div>
-
-          <button id="prev-btn" class="secondary-btn hidden" onclick="prevQuestion()"></button>
-        </div>
-      </div>
-
-      <div id="result" class="page hidden">
-        <div class="page-card" id="result-capture-card">
-          <div class="top-mini-bar">
-            <button class="mini-btn" onclick="showPage('home')">×</button>
-            <div class="mini-title">MeowTI</div>
-            <button class="lang-switch" onclick="toggleLang()">EN / 中</button>
-          </div>
-
-          <div id="result-title" class="result-title"></div>
-          <div id="type" class="result-type"></div>
-          <img id="catImg" class="cat-img" alt="result cat" />
-          <div id="result-tags" class="result-tags"></div>
-          <div id="subCat" class="sub-cat-line hidden"></div>
-          <div id="desc" class="result-desc"></div>
-
-          <button id="share-btn" class="share-btn" onclick="saveResultAsImage()"></button>
-          <button id="retry-btn" class="primary-btn" onclick="location.reload()"></button>
-
+      <div id="shareCapture">
+        <div class="main-card">
+          <div id="resultHead" class="result-head cn"></div>
+          <div id="resultName" class="result-name cn"></div>
+          <img id="resultImg" class="cat-img" alt="cat">
+          <div id="resultTags" class="tags"></div>
+          <div id="resultHook" class="result-hook cn"></div>
+          <div id="resultShortLine" class="short-line cn"></div>
+          <div id="resultShortDesc" class="desc-short cn"></div>
           <div class="center">
-            <a id="gallery-link" class="result-extra-link" onclick="showPage('info')"></a>
+            <button id="detailToggle" class="detail-toggle cn" onclick="toggleDetail()"></button>
+          </div>
+          <div id="detailWrap" class="detail-wrap hidden">
+            <div id="resultFullDesc" class="desc-full cn"></div>
           </div>
         </div>
 
-        <div id="result-creator" class="creator-note"></div>
+        <div class="mix-card">
+          <div id="mixTitle" class="mix-title cn"></div>
+          <div id="mixRows"></div>
+        </div>
+
+        <div id="shareFooter" class="share-footer"></div>
       </div>
 
-      <div id="info" class="page hidden">
-        <div class="page-card">
-          <div class="top-mini-bar">
-            <button class="mini-btn" onclick="showPage('home')">←</button>
-            <div id="gallery-title" class="mini-title"></div>
-            <button class="lang-switch" onclick="toggleLang()">EN / 中</button>
-          </div>
+      <div class="actions">
+        <button id="shareBtn" class="share-btn cn" onclick="saveShareImage()"></button>
+        <button id="retryBtn" class="retry-btn cn" onclick="restartQuiz()"></button>
+        <a id="galleryLink" class="gallery-link cn" onclick="showGallery()"></a>
+      </div>
+      <div id="resultCreator" class="creator-note cn"></div>
+    </section>
 
-          <div id="encyclopedia-content"></div>
-
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px;">
-            <button id="prev-cat-btn" class="secondary-btn" style="width:auto;padding:10px 18px;" onclick="changeEncyclopedia(-1)"></button>
-            <div id="encyclopedia-dots" class="dots"></div>
-            <button id="next-cat-btn" class="secondary-btn" style="width:auto;padding:10px 18px;" onclick="changeEncyclopedia(1)"></button>
-          </div>
-
-          <div class="center" style="margin-top: 18px;">
-            <button id="back-home-btn" class="secondary-btn" style="max-width: 220px;" onclick="showPage('home')"></button>
-          </div>
+    <section id="gallery" class="page-card gallery-page hidden">
+      <div class="topbar">
+        <button class="mini-btn" onclick="showResult()">←</button>
+        <div class="brand">MeowTI</div>
+        <div class="lang-group">
+          <button class="lang-btn" data-lang="zh-Hant" onclick="setLang('zh-Hant')">繁</button>
+          <button class="lang-btn active" data-lang="zh-Hans" onclick="setLang('zh-Hans')">简</button>
+          <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
         </div>
       </div>
-    </div>
+      <div class="gallery-card">
+        <img id="galleryImg" class="cat-img" alt="cat">
+        <div id="galleryName" class="gallery-title cn"></div>
+        <div id="galleryTags" class="tags"></div>
+        <div id="galleryShort" class="gallery-short cn"></div>
+        <div id="galleryDesc" class="gallery-desc cn"></div>
+      </div>
+      <div class="gallery-nav">
+        <button id="galleryPrev" class="secondary-btn mini-secondary cn" onclick="changeGallery(-1)"></button>
+        <div id="galleryDots" class="dots"></div>
+        <button id="galleryNext" class="secondary-btn mini-secondary cn" onclick="changeGallery(1)"></button>
+      </div>
+      <div class="center" style="margin-top:18px;">
+        <button id="galleryBack" class="secondary-btn cn" style="max-width:220px;" onclick="goHome()"></button>
+      </div>
+    </section>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script>
-      let currentLang = "zh";
-      let index = 0;
-      let answerHistory = [];
-      let currentCat = null;
-      let secondaryCat = null;
-      let encyclopediaIndex = 0;
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    const creatorUrls = {
+      zh: "https://xhslink.com/m/4UvxBJwr6CT",
+      en: "https://www.instagram.com/carrieme216?igsh=NmU3a3Zla2htZjZv"
+    };
 
-      const uiText = {
+    const uiText = {
+      "zh-Hans": {
+        homeBrand: "测测你的 MeowTI",
+        homeTitle: "咪的天，<br>睡醒变成小猫了！",
+        homeSubtitle: "先默认自己已经长出耳朵和尾巴，再来看看你会是哪一种小猫。",
+        startBtn: "开始变猫",
+        creatorPrefix: "任何反馈和建议请",
+        creatorHandle: "@呆呆滴滴嗒嗒",
+        loading: "正在进入喵喵世界…",
+        prevQuestion: "← 返回上一题",
+        resultHead: "你的 MeowTi is—",
+        mixTitle: "你的猫格组成",
+        detailOpen: "看看完整分析",
+        detailClose: "收起完整分析",
+        shareBtn: "分享给好友",
+        retryBtn: "再测一次",
+        galleryLink: "看看别的小猫？",
+        galleryPrev: "上一只",
+        galleryNext: "下一只",
+        galleryBack: "返回主页",
+        shareFooter: "MeowTI · @呆呆滴滴嗒嗒"
+      },
+      "en": {
+        homeBrand: "Test Your MeowTI",
+        homeTitle: "Oh meow…<br>I woke up as a kitten!",
+        homeSubtitle: "Assume you already have ears and a tail, then let’s see what kind of cat you are.",
+        startBtn: "Start Becoming a Cat",
+        creatorPrefix: "Feedback or suggestions?",
+        creatorHandle: "@carrieme216",
+        loading: "Entering the meow meow world…",
+        prevQuestion: "← Previous Question",
+        resultHead: "Your MeowTi is—",
+        mixTitle: "Your Meow Composition",
+        detailOpen: "Read Full Analysis",
+        detailClose: "Hide Full Analysis",
+        shareBtn: "Share with Friends",
+        retryBtn: "Try Again",
+        galleryLink: "See other meow meows?",
+        galleryPrev: "Previous",
+        galleryNext: "Next",
+        galleryBack: "Back Home",
+        shareFooter: "MeowTI · @carrieme216"
+      }
+    };
+
+    const coldFacts = {
+      "zh-Hans": [
+        "猫尝不出甜味。",
+        "猫慢慢眨眼，通常是在表达喜欢。",
+        "猫用屁股对着你，往往是一种信任。",
+        "每只猫的鼻纹都不一样。",
+        "猫会靠气味认主人。",
+        "猫耳朵有很多肌肉，可以灵活转动。",
+        "猫能跳到自己身高好几倍的高度。",
+        "猫舌头上有细小倒刺。",
+        "猫能发出很多不同的声音。",
+        "猫后脚常会踩在前脚走过的位置。",
+        "尾巴能帮助猫保持平衡。",
+        "猫睡很多，但不一定每次都睡得很沉。",
+        "猫胡须能帮助判断空间宽窄。",
+        "猫咪喜欢把熟悉的气味留在自己的地盘里。",
+        "猫耳朵会先一步捕捉到细小动静。",
+        "猫踩奶通常和放松感、安全感有关。",
+        "猫会用不同叫声和人沟通。",
+        "猫鼻子湿润时，闻气味会更灵敏。",
+        "猫很会记住固定路线和熟悉位置。",
+        "猫不舒服时，往往会先躲起来。",
+        "打呼噜不只代表开心，有时也是自我安抚。",
+        "猫很在意气味变化。",
+        "猫对高处通常会更有安全感。",
+        "猫咪白天也会突然进入发疯模式。",
+        "猫用身体蹭你，也是在留下自己的气味。",
+        "猫喝水少时，更容易偏爱流动水。",
+        "猫的眼睛在暗处会更有优势。",
+        "猫能很快记住开饭时间。",
+        "猫不喜欢被一直盯着看。",
+        "猫有时会把你当成值得信任的大猫。"
+      ],
+      "en": [
+        "Cats cannot taste sweetness.",
+        "A slow blink is usually a sign of affection.",
+        "A cat showing its rear is often a sign of trust.",
+        "Each cat’s nose print is unique.",
+        "Cats recognize their humans by scent.",
+        "Cat ears have many muscles and can rotate flexibly.",
+        "Cats can jump several times their own height.",
+        "Cat tongues have tiny barbs.",
+        "Cats can make many different sounds.",
+        "Back paws often land where front paws stepped.",
+        "A cat’s tail helps it keep balance.",
+        "Cats sleep a lot, but not every nap is deep sleep.",
+        "Whiskers help cats judge space and width.",
+        "Cats like leaving familiar scent marks in their territory.",
+        "A cat’s ears often catch tiny sounds first.",
+        "Kneading is often linked to comfort and safety.",
+        "Cats use different meows to communicate with humans.",
+        "A slightly damp nose can help with scent detection.",
+        "Cats remember routes and familiar places well.",
+        "When cats feel unwell, they often hide first.",
+        "Purring does not only mean happiness; it can also be self-soothing.",
+        "Cats are very sensitive to scent changes.",
+        "Cats often feel safer in high places.",
+        "Cats can suddenly switch into zoomies mode during the day.",
+        "When a cat rubs against you, it is also leaving its scent.",
+        "Cats that drink less water may prefer moving water.",
+        "Cats have an advantage in low light.",
+        "Cats quickly remember meal times.",
+        "Cats usually dislike being stared at for too long.",
+        "Sometimes cats treat you like a trusted bigger cat."
+      ]
+    };
+
+    const imageMap = {
+      ragdoll: "ragdoll.jpg",
+      maine: "mainecoon.jpg",
+      siamese: "siamese.jpg",
+      british: "britishshorthair.jpg",
+      black: "blackcat.jpg",
+      cow: "cowcat.jpg",
+      tabby: "tabby.jpg",
+      chinchilla: "chinchilla.jpg"
+    };
+
+    const catData = {
+      ragdoll: {
         zh: {
-          homeBrand: "測測你的 MeowTI",
-          homeTitle: "咪的天，<br>睡醒變成小貓了！",
-          startBtn: "開始變貓",
-          creatorPrefix: "任何反馈和建議請",
-          creatorHandle: "@呆呆滴滴嗒嗒",
-          creatorUrl: "https://xhslink.com/m/4UvxBJwr6CT",
-          loading: "正在進入喵喵世界…",
-          prevQuestion: "← 返回上一題",
-          resultTitle: "你的貓格是——",
-          share: "分享給好友",
-          retry: "再測一次",
-          seeOthers: "看看別的喵喵？",
-          gallery: "貓格圖鑑",
-          prevCat: "上一隻",
-          nextCat: "下一隻",
-          backHome: "返回主頁"
+          name: "布偶猫 ☁️",
+          tags: ["温柔","慢热","喜欢陪伴","情绪稳定"],
+          short: "软乎乎贴贴怪",
+          hook: "你看起来软，但并不是真的没有原则。",
+          shortDesc: "你不急着把自己摊开，但一旦认定了舒服的人和地方，就会慢慢放松下来。",
+          full: [
+            "当你把布偶猫抱起来，它的身体会整个放松，像一袋刚晒完太阳的棉花，软软地靠在你的臂弯里。一张睡熟的毯子、一个固定的饭碗、每天同一时间出现的抚摸，这些小事都能让它很安心。",
+            "你也是这样。你不喜欢太突然的情绪冲击，也不喜欢忽远忽近的人。你愿意花时间慢慢靠近别人，慢慢交出自己。",
+            "你适合温柔、安稳、慢慢靠近的关系，也值得被认真对待。"
+          ]
         },
         en: {
-          homeBrand: "Test Your MeowTI",
-          homeTitle: "Oh meow…<br>I woke up as a kitten!",
-          startBtn: "Start Becoming a Cat",
-          creatorPrefix: "Feedback or suggestions?",
-          creatorHandle: "@carrieme216",
-          creatorUrl: "https://www.instagram.com/carrieme216?igsh=NmU3a3Zla2htZjZv",
-          loading: "Entering the meow meow world…",
-          prevQuestion: "← Previous Question",
-          resultTitle: "Your MeowTI is—",
-          share: "Share with Friends",
-          retry: "Try Again",
-          seeOthers: "See other meow meows?",
-          gallery: "MeowTI Gallery",
-          prevCat: "Previous",
-          nextCat: "Next",
-          backHome: "Back Home"
+          name: "Ragdoll ☁️",
+          tags: ["Gentle","Slow-to-warm","Companionable","Emotionally Stable"],
+          short: "A soft little clingy cloud.",
+          hook: "You may look soft, but that does not mean you have no standards.",
+          shortDesc: "You do not open up too fast, but once you feel safe, you relax deeply and stay warm for a long time.",
+          full: [
+            "A Ragdoll relaxes completely when held, like a bag of sun-warmed cotton. A cozy blanket, a familiar food bowl, and steady affection are enough to make it feel safe.",
+            "You are similar. You dislike emotional whiplash and people who run hot and cold. You prefer to approach slowly and reveal yourself gradually.",
+            "You are built for gentle, stable, slow-burning connections, and you deserve to be treated with care."
+          ]
         }
-      };
+      },
+      maine: {
+        zh: {
+          name: "缅因猫 🐾",
+          tags: ["稳重","有主场感","可靠","有边界"],
+          short: "自带主场气质",
+          hook: "你不一定抢镜，但很容易让人觉得你镇得住场。",
+          shortDesc: "你有自己的秩序感和分寸感，关键时刻总能把场子接住。",
+          full: [
+            "缅因猫给人的感觉很特别：块头大，气场稳，不需要刻意抢镜，往那儿一站就像在说这地方我能镇住。",
+            "你也有这种气质。你不一定是第一个冲出去的人，但关键时刻你总能接住场子、守住边界、把乱七八糟的事情理清楚。",
+            "你对我的节奏、我的东西、我的位置有天然的主场意识，也不喜欢别人随便越线。"
+          ]
+        },
+        en: {
+          name: "Maine Coon 🐾",
+          tags: ["Steady","Owns the room","Reliable","Has boundaries"],
+          short: "Built-in main-character territory.",
+          hook: "You may not chase the spotlight, but people often feel that you can hold the room together.",
+          shortDesc: "You carry your own order and sense of proportion, and you tend to steady things when they matter most.",
+          full: [
+            "Maine Coons have a distinct presence: large, composed, and naturally grounded. They do not need to fight for attention to feel important.",
+            "You have a similar energy. You may not always be the first to rush in, but when things get messy, you are often the one who stabilizes the situation and protects the line.",
+            "You have a strong awareness of your own pace, your own things, and your own space, and you do not like people crossing those lines casually."
+          ]
+        }
+      },
+      siamese: {
+        zh: {
+          name: "暹罗猫 🗣️",
+          tags: ["外放","直接","活跃","有存在感"],
+          short: "有话我是真说",
+          hook: "你不适合长期静音运行，迟早都会把情绪和想法说出来。",
+          shortDesc: "你需要参与、需要回应，也很难一直假装自己没感觉。",
+          full: [
+            "暹罗猫是出了名的爱表达。它们爱叫、爱互动、情绪都写在脸上，开心藏不住，不爽也装不了。",
+            "你也是这样。你不太适合长期静音运行，脑子里有东西、心里有感觉，迟早都会从眼神、语气或者一句话里漏出来。",
+            "你不喜欢绕弯子，也很难忍受一直让你压着、收着、做小伏低的关系。"
+          ]
+        },
+        en: {
+          name: "Siamese 🗣️",
+          tags: ["Expressive","Direct","Active","Noticeable"],
+          short: "If I have something to say, I say it.",
+          hook: "You are not built for silent mode forever; sooner or later, your feelings will show.",
+          shortDesc: "You need participation and response, and it is hard for you to keep pretending you feel nothing.",
+          full: [
+            "Siamese cats are famously expressive. They vocalize, interact, and wear their emotions very openly.",
+            "You are similar. You are not made for quiet mode forever. If something is on your mind, it eventually leaks through your tone, your eyes, or your words.",
+            "You dislike endless ambiguity, and you struggle in relationships that demand constant suppression or shrinking."
+          ]
+        }
+      },
+      british: {
+        zh: {
+          name: "英短蓝猫 💤",
+          tags: ["松弛","稳定","懒懒的","自有节奏"],
+          short: "本猫先躺为敬",
+          hook: "你不是没兴趣，只是对无效消耗没耐心。",
+          shortDesc: "你有自己的省电模式，也知道不是每一分钟都值得全速运转。",
+          full: [
+            "英短蓝猫最经典的气质，就是那种圆圆的、稳稳的、慢半拍也无所谓的松弛感。舒服是大事，睡觉是正事。",
+            "你也有这种天赋。你不是对世界没兴趣，你只是对无效消耗没什么耐心。你有自己的启动节奏，也有自己的省电模式。",
+            "别人忙忙碌碌的时候，你未必想跟着卷，但真正重要的事情来了，你也不会掉链子。"
+          ]
+        },
+        en: {
+          name: "British Shorthair Blue 💤",
+          tags: ["Relaxed","Steady","A little lazy","Own rhythm"],
+          short: "This cat will lie down first, thank you.",
+          hook: "It is not that you do not care; you just have little patience for pointless drain.",
+          shortDesc: "You know how to save your energy, and you know not every minute deserves full speed.",
+          full: [
+            "The classic British Blue feeling is round, grounded, and unbothered. Comfort matters. Rest matters. There is no rush if there is no need.",
+            "You share that quality. It is not that you lack interest in the world; you simply do not enjoy wasting yourself on empty friction.",
+            "You move at your own pace, and while you may not rush into everything, you do show up when it truly counts."
+          ]
+        }
+      },
+      black: {
+        zh: {
+          name: "黑猫 🖤",
+          tags: ["神秘","敏感","夜间模式","感知强"],
+          short: "暗中观察",
+          hook: "你偏向按自己的节奏行动，也很需要自己的空间。",
+          shortDesc: "你不一定社恐，但你确实需要安静。很多想法都只会在独处时慢慢浮出来。",
+          full: [
+            "黑猫身上总有一种说不清的气质。白天看着安静，到了夜里却像切进了自己的频道。它们对光线、声音、气味都很敏感。",
+            "你也有这种感觉。你不一定总是躲开热闹，但你心里一定有一小块地方，是专门留给自己的，留给安静和夜色的。",
+            "你适合被理解，而不是被追问。你不随便打开自己，但一旦打开，就会很深。"
+          ]
+        },
+        en: {
+          name: "Black Cat 🖤",
+          tags: ["Mysterious","Sensitive","Night mode","Perceptive"],
+          short: "Observing from the shadows.",
+          hook: "You move at your own pace, and you need space that truly belongs to you.",
+          shortDesc: "You are not necessarily antisocial, but you do need quiet. A lot of your thoughts surface only in solitude.",
+          full: [
+            "Black cats often feel hard to sum up. Quiet by day, tuned into something deeper by night, they are highly aware of light, sound, and atmosphere.",
+            "You carry a similar kind of channel. You may not avoid people all the time, but you definitely need a part of life that stays private and undisturbed.",
+            "You are better with understanding than interrogation. You do not open easily, but when you do, you go deep."
+          ]
+        }
+      },
+      cow: {
+        zh: {
+          name: "奶牛猫 ⚡",
+          tags: ["抽象","跳脱","精力旺","很难预测"],
+          short: "抽象派活体艺术",
+          hook: "你不是不稳定，你只是太容易被有趣的东西点亮。",
+          shortDesc: "安静和发疯之间常常没有过渡，你的脑回路也很少完全按常理走。",
+          full: [
+            "奶牛猫在很多人的印象里都很特别：上一秒像断电，下一秒像被雷劈了一样满屋乱飞，安静和发疯之间常常没有过渡。",
+            "你身上也有这种很难完全猜透的生命力。你不是不稳定，你只是太容易被有趣的东西点亮。",
+            "无聊对你来说比累还难受。哪怕有时候抽象得让人想捂脸，也很难不被你逗笑。"
+          ]
+        },
+        en: {
+          name: "Cow Cat ⚡",
+          tags: ["Abstract","Unexpected","High-energy","Unpredictable"],
+          short: "A living piece of abstract art.",
+          hook: "You are not unstable; you are simply very easy to light up with anything interesting.",
+          shortDesc: "There is often no transition between calm and chaos, and your mind rarely moves in a fully ordinary way.",
+          full: [
+            "Cow cats often feel wonderfully unhinged in the best way. One second they look powered off, the next they are racing through the house with zero warning.",
+            "You carry that same impossible-to-fully-predict life force. It is not instability so much as intense reactivity to whatever feels fun, alive, or interesting.",
+            "Boredom is harder on you than exhaustion. Even when you get a little absurd, people still tend to find you oddly delightful."
+          ]
+        }
+      },
+      tabby: {
+        zh: {
+          name: "狸花猫 🌿",
+          tags: ["机灵","警觉","适应力强","生存感高"],
+          short: "生存本能拉满",
+          hook: "你很少让自己毫无准备地掉进局里。",
+          shortDesc: "你对环境、资源和边界有天然警觉，也很知道怎么把日子过成自己的地盘。",
+          full: [
+            "狸花猫常被认为是那种很聪明、很警觉、也很会过日子的猫。它们知道哪儿该去，哪儿该躲，什么时候该试探，什么时候该先护住饭碗和地盘。",
+            "你也是这种运行模式。你不太会让自己毫无准备地掉进局里，对新东西会先看两眼，对不熟的人会先闻闻味道。",
+            "别人可能觉得你谨慎、现实、想得多，但这其实是一种很强的生存感。你知道自己该怎么活、怎么避坑、怎么把日子过成自己的地盘。"
+          ]
+        },
+        en: {
+          name: "Tabby Cat 🌿",
+          tags: ["Resourceful","Alert","Adaptable","Strong survival instinct"],
+          short: "Survival instincts fully online.",
+          hook: "You rarely let yourself fall into situations completely unprepared.",
+          shortDesc: "You have a natural alertness toward environments, resources, and boundaries, and you know how to make life feel like your own territory.",
+          full: [
+            "Tabbies are often seen as clever, alert, and extremely capable at everyday survival. They know where to go, where to hide, and when to test the waters versus protect the food bowl.",
+            "You operate in a similar way. You rarely throw yourself into new situations without some kind of read on them first, and unfamiliar people usually get observed before they get trusted.",
+            "Some people may call you cautious or overly realistic, but what they are really seeing is a strong survival intelligence. You know how to keep your footing."
+          ]
+        }
+      },
+      chinchilla: {
+        zh: {
+          name: "金吉拉 ✨",
+          tags: ["讲究","漂亮","挑剔","慢慢来"],
+          short: "讲究猫生美",
+          hook: "你不是难搞，你只是有审美、有感觉，也有自己的门槛。",
+          shortDesc: "不是所有东西都值得你立刻靠近，差一点都不行的时候，你宁愿慢一点。",
+          full: [
+            "金吉拉自带一种精致、漂亮、不能太随便的感觉。它们通常不是最快热络的猫，对环境、触感、节奏和对象都有自己的标准。",
+            "你也是这样。你不是难搞，你只是有审美、有感觉、有自己的门槛。不是所有热情你都会照单全收，不是所有东西都值得你立刻靠近。",
+            "你适合舒服、有分寸感、也愿意认真对待你标准的世界。"
+          ]
+        },
+        en: {
+          name: "Chinchilla ✨",
+          tags: ["Particular","Pretty","Picky","Slowly but surely"],
+          short: "A beautifully curated cat life.",
+          hook: "You are not difficult; you simply have taste, sensitivity, and standards.",
+          shortDesc: "Not everything deserves your immediate closeness, and when something feels slightly off, you would rather take your time.",
+          full: [
+            "Chinchillas carry a polished, particular, almost untouchable feeling. They are not always the fastest to warm up, and they usually have standards for environment, texture, timing, and people.",
+            "You are similar. It is not that you are impossible; it is that you have discernment. Not every invitation, object, or burst of warmth feels worthy of instant closeness.",
+            "You belong in worlds that are gentle, well-measured, and willing to take your standards seriously."
+          ]
+        }
+      }
+    };
 
-      const imageMap = {
-        ragdoll: "ragdoll.jpg",
-        maine: "mainecoon.jpg",
-        siamese: "siamese.jpg",
-        british: "britishblue.jpg",
-        black: "blackcat.jpg",
-        cow: "cowcat.jpg",
-        tabby: "tabby.jpg",
-        chinchilla: "chinchilla.jpg"
-      };
-
-      const quizTips = {
-        zh: [
-          "猫尝不出甜味哦。",
-          "猫慢慢眨眼，其实是在表达喜欢。",
-          "猫用屁股对着你，通常是信任。",
-          "猫的鼻纹像人的指纹一样，独一无二。",
-          "咪咪也会靠气味认主人。",
-          "猫耳朵有 32 块肌肉。",
-          "咪咪跳高可以达到自己身高的 5 倍左右。",
-          "猫舌头上有倒刺。",
-          "猫能发出很多不同的声音。",
-          "走路时，咪咪的后脚常会踩到前脚走过的位置。",
-          "猫耳朵可以灵活转动。",
-          "咪咪会用尾巴帮助自己保持平衡。"
-        ],
-        en: [
-          "Cats cannot taste sweetness.",
-          "A slow blink is a sign of affection.",
-          "A cat showing its rear is a sign of trust.",
-          "Each cat’s nose print is unique.",
-          "Cats recognize their owners by scent.",
-          "A cat's ear has 32 muscles.",
-          "Cats can jump five times their height.",
-          "Cat tongues have tiny barbs.",
-          "Cats can make many different sounds.",
-          "Back paws land where front paws stepped.",
-          "Cat ears can rotate flexibly.",
-          "A cat’s tail helps it keep balance."
+    const questionsMaster = [
+      {
+        id: 1,
+        zh: "混进人类家里，我最关心——",
+        en: "If I sneaked into a human house, the first thing I’d care about is—",
+        options: [
+          { zh:"这里有啥好吃好玩的呢？", en:"What’s fun here, and what can I eat?", add:{siamese:3,british:1,cow:2,tabby:2,chinchilla:-1,black:-1,ragdoll:0,maine:0}},
+          { zh:"人类先别碰我啊！", en:"Human, hands off for now.", add:{black:3,tabby:2,maine:1,chinchilla:1,ragdoll:-1,siamese:-1,british:0,cow:0}},
+          { zh:"有没有美味猫粮？", en:"Is there any good cat food here?", add:{british:3,tabby:2,ragdoll:1,siamese:1,chinchilla:1,maine:0,black:0,cow:0}},
+          { zh:"放我走！我要自由！", en:"Let me out! I want freedom!", add:{tabby:3,black:2,cow:2,maine:1,siamese:1,ragdoll:-1,british:-1,chinchilla:-1}},
+          { zh:"原地摊开，我是一张猫饼。", en:"Flop on the floor. I am now a cat loaf.", add:{british:3,ragdoll:2,chinchilla:1,maine:0,siamese:-1,black:-1,cow:-1,tabby:-1}}
         ]
+      },
+      {
+        id: 2,
+        zh: "我理想中的窝应该是——",
+        en: "My ideal sanctuary should be...",
+        options: [
+          { zh:"当然要在可以偶尔骚扰人类的位置！", en:"Somewhere I can occasionally bother my humans.", add:{siamese:3,ragdoll:2,british:1,cow:1,maine:0,tabby:0,chinchilla:0,black:-1}},
+          { zh:"高，高一点，再高一点，本喵要俯视众生！", en:"High. Higher. Even higher — I thrive on surveying my domain.", add:{maine:3,black:2,siamese:1,cow:1,tabby:1,chinchilla:1,ragdoll:-1,british:0}},
+          { zh:"在角落里，本咪需要个猫空间。", en:"A secluded corner; this kitty values personal boundaries.", add:{black:3,tabby:2,chinchilla:2,maine:1,ragdoll:0,british:0,cow:0,siamese:-1}},
+          { zh:"靠窗，方便观察世界。", en:"By the window, quietly observing the world.", add:{black:2,tabby:2,ragdoll:1,maine:1,british:1,chinchilla:1,siamese:0,cow:0}},
+          { zh:"今天睡这里，明天睡那里，主打一个流浪艺术家。", en:"Ever-changing; I’m a free-spirited wanderer at heart.", add:{cow:3,tabby:2,black:2,siamese:1,maine:0,chinchilla:0,ragdoll:-1,british:-1}}
+        ]
+      },
+      {
+        id: 3,
+        zh: "有人想来摸我——",
+        en: "Someone wants to pet me—",
+        options: [
+          { zh:"来啊，摸这里，这里，还有下巴。", en:"Go ahead. Here, here, and under the chin too.", add:{ragdoll:3,siamese:2,british:1,cow:1,maine:0,black:-1,tabby:-1,chinchilla:0}},
+          { zh:"你长得好看吗？先让我看看。", en:"Are you good-looking enough? Let me check first.", add:{chinchilla:3,siamese:1,cow:1,ragdoll:0,maine:0,british:0,black:0,tabby:-1}},
+          { zh:"溜了溜了。", en:"Nope. I’m out.", add:{black:3,tabby:2,cow:1,ragdoll:-1,maine:0,siamese:-1,british:0,chinchilla:0}},
+          { zh:"吃我一记喵喵拳！", en:"Take this meow meow punch!", add:{siamese:3,cow:2,maine:1,black:1,tabby:1,ragdoll:-1,british:-1,chinchilla:-1}},
+          { zh:"只能摸一下。", en:"One touch only.", add:{chinchilla:3,black:1,maine:1,ragdoll:0,siamese:0,british:0,tabby:0,cow:-1}}
+        ]
+      },
+      {
+        id: 4,
+        zh: "深夜两点，人类睡了，我——",
+        en: "At 2 a.m., the humans are asleep, and I—",
+        options: [
+          { zh:"贴地狂奔！踹翻全世界的水杯！", en:"Sprint across the floor and knock over every water cup in sight!", add:{cow:3,siamese:2,black:1,tabby:1,ragdoll:-1,british:-1,maine:0,chinchilla:-1}},
+          { zh:"安静蹲在窗边。", en:"Sit quietly by the window.", add:{black:3,chinchilla:1,tabby:1,maine:1,ragdoll:0,british:0,cow:0,siamese:-1}},
+          { zh:"就要和铲屎官挨在一起。", en:"Insist on curling up next to my human.", add:{ragdoll:3,british:2,siamese:1,maine:0,cow:0,chinchilla:0,tabby:-1,black:-1}},
+          { zh:"猫老大爱去哪就去哪，少管我！", en:"The boss cat goes where it wants. Mind your business.", add:{black:2,cow:2,tabby:2,maine:1,siamese:1,ragdoll:-1,british:0,chinchilla:-1}},
+          { zh:"认真舔毛。", en:"Groom myself with full dedication.", add:{chinchilla:3,ragdoll:1,british:1,black:1,maine:0,tabby:0,siamese:-1,cow:-1}}
+        ]
+      },
+      {
+        id: 6,
+        zh: "心情不好的时候——",
+        en: "When I’m in a bad mood—",
+        options: [
+          { zh:"谁都别碰我！", en:"Nobody touch me.", add:{black:3,maine:1,siamese:1,cow:1,tabby:1,ragdoll:-1,british:0,chinchilla:0}},
+          { zh:"有没有人陪陪我啊。", en:"Can someone stay with me for a bit?", add:{ragdoll:3,siamese:1,british:1,black:0,cow:0,chinchilla:0,tabby:-1,maine:-1}},
+          { zh:"睡个大的。", en:"Take the biggest nap possible.", add:{british:3,ragdoll:2,chinchilla:1,maine:0,black:0,cow:0,tabby:-1,siamese:-1}},
+          { zh:"该吃吃，该喝喝。", en:"Eat, drink, and carry on.", add:{british:2,tabby:2,ragdoll:1,maine:1,black:0,cow:0,siamese:0,chinchilla:0}},
+          { zh:"吃点猫砂，装傻气死铲屎官。", en:"Do something baffling just to stress my human out.", add:{cow:3,siamese:1,ragdoll:-1,maine:-1,british:0,black:0,tabby:0,chinchilla:-1}}
+        ]
+      },
+      {
+        id: 7,
+        zh: "家里来了新猫做客——",
+        en: "A new cat visits the house—",
+        options: [
+          { zh:"欢迎您来！一起玩呀！", en:"Welcome! Come play with me!", add:{siamese:3,ragdoll:2,cow:1,maine:0,tabby:0,british:0,black:-1,chinchilla:-1}},
+          { zh:"有吃的吗？", en:"Did they bring snacks?", add:{tabby:3,british:2,cow:1,ragdoll:0,maine:0,siamese:0,black:0,chinchilla:-1}},
+          { zh:"观察一下。", en:"Observe first.", add:{black:3,tabby:2,maine:1,chinchilla:1,ragdoll:0,cow:0,british:0,siamese:-1}},
+          { zh:"我只和漂亮猫玩。", en:"I only play with pretty cats.", add:{chinchilla:3,siamese:1,ragdoll:0,black:0,maine:-1,british:0,cow:0,tabby:-1}},
+          { zh:"我会看当天心情决定要不要社交。", en:"Depends on my mood that day.", add:{british:2,chinchilla:2,black:1,cow:1,ragdoll:0,maine:0,siamese:0,tabby:0}},
+          { zh:"关我什么事。", en:"How is that my problem?", add:{black:2,maine:1,tabby:1,british:1,ragdoll:-1,siamese:-1,cow:0,chinchilla:0}}
+        ]
+      },
+      {
+        id: 8,
+        zh: "人类给的食物看起来好好吃——",
+        en: "The food the human gave me looks amazing—",
+        options: [
+          { zh:"我炫炫炫！", en:"I devour it immediately.", add:{british:3,tabby:2,cow:1,siamese:1,ragdoll:0,maine:0,black:-1,chinchilla:-1}},
+          { zh:"有人喂到嘴边我就吃。", en:"If someone feeds me directly, sure.", add:{ragdoll:3,chinchilla:2,british:1,maine:-1,black:-1,siamese:0,cow:0,tabby:-1}},
+          { zh:"说不定有毒呢？你们先吃。", en:"Could be poisoned. You try it first.", add:{black:3,tabby:2,chinchilla:1,maine:1,ragdoll:-1,siamese:-1,british:0,cow:0}},
+          { zh:"慢慢吃。", en:"I eat slowly.", add:{chinchilla:3,british:2,ragdoll:1,maine:0,black:0,tabby:0,siamese:-1,cow:-1}},
+          { zh:"不食嗟来之食。", en:"I would rather starve than accept food given with contempt.", add:{chinchilla:3,maine:2,black:1,ragdoll:-1,siamese:0,british:0,cow:-1,tabby:0}}
+        ]
+      },
+      {
+        id: 10,
+        zh: "听到奇怪动静，我——",
+        en: "When I hear a strange sound, I—",
+        options: [
+          { zh:"耳朵先转过去，身体不动。", en:"Turn my ears first, body stays still.", add:{tabby:3,black:2,maine:1,ragdoll:0,siamese:0,british:0,cow:0,chinchilla:0}},
+          { zh:"立刻过去看，看到底什么东西敢打扰本喵。", en:"Go check immediately. Who dares disturb me?", add:{tabby:3,siamese:2,maine:1,cow:1,ragdoll:-1,black:0,british:0,chinchilla:-1}},
+          { zh:"不知道发生了什么，但是先炸一下毛吧！", en:"No idea what happened, but I’m puffing up first.", add:{cow:3,black:2,tabby:1,siamese:1,ragdoll:-1,british:-1,maine:0,chinchilla:-1}},
+          { zh:"假装没听见，活着就行。", en:"Pretend I heard nothing. Survival first.", add:{british:3,black:1,chinchilla:1,ragdoll:0,maine:0,tabby:0,siamese:-1,cow:0}},
+          { zh:"什么动静啊！我先躲起来了！", en:"What was that? I’m hiding first!", add:{black:3,tabby:2,chinchilla:1,ragdoll:-1,maine:0,british:0,siamese:-1,cow:0}}
+        ]
+      },
+      {
+        id: 11,
+        zh: "别猫骂我——",
+        en: "Another cat yells at me—",
+        options: [
+          { zh:"当场哈回去，输气势也不能输阵。", en:"Hiss back immediately. I may lose the fight, but not the attitude.", add:{siamese:3,cow:2,maine:1,black:1,ragdoll:-1,british:0,tabby:0,chinchilla:-1}},
+          { zh:"呜呜呜求你别骂我了。", en:"Please stop yelling at me…", add:{ragdoll:3,british:1,black:0,siamese:0,chinchilla:0,cow:-1,tabby:-1,maine:-1}},
+          { zh:"偷吃两口猫粮，假装无事发生。", en:"Steal a few bites of food and act like nothing happened.", add:{cow:3,tabby:2,british:1,ragdoll:0,black:0,siamese:0,maine:-1,chinchilla:-1}},
+          { zh:"懒得吵，你爱怎么样怎么样吧。", en:"Too lazy to argue. Do whatever you want.", add:{british:3,maine:1,black:1,ragdoll:0,tabby:0,siamese:-1,cow:0,chinchilla:1}},
+          { zh:"吃我一记喵喵拳！", en:"Take this meow meow punch!", add:{siamese:3,cow:2,tabby:1,ragdoll:-1,british:-1,black:0,maine:0,chinchilla:-1}}
+        ]
+      },
+      {
+        id: 12,
+        zh: "别猫靠近我的饭，我会——",
+        en: "If another cat comes near my food, I will—",
+        options: [
+          { zh:"开启狂炫模式。", en:"Eat faster than ever.", add:{tabby:3,british:2,siamese:1,cow:1,ragdoll:0,maine:0,black:0,chinchilla:-1}},
+          { zh:"用身体挡住。", en:"Block it with my body.", add:{maine:3,tabby:2,black:1,ragdoll:0,siamese:0,british:0,cow:0,chinchilla:-1}},
+          { zh:"再靠近我就哈你了！", en:"One more step and I hiss.", add:{siamese:3,maine:1,black:1,cow:1,tabby:1,ragdoll:-1,british:-1,chinchilla:-1}},
+          { zh:"吃我一记喵喵拳！", en:"Take a meow meow punch!", add:{cow:3,siamese:2,tabby:1,ragdoll:-1,british:-1,black:0,maine:0,chinchilla:-1}},
+          { zh:"那就一起吃。", en:"Fine, we can share.", add:{ragdoll:3,siamese:1,british:1,tabby:0,cow:0,maine:0,chinchilla:0,black:-1}},
+          { zh:"呜呜呜你吃吧，我一点都不心痛。", en:"Go ahead then. It’s not like I’m heartbroken or anything.", add:{ragdoll:2,chinchilla:2,ragdoll2:0,maine:-1,tabby:-1,siamese:0,british:0,black:0,cow:0}}
+        ]
+      },
+      {
+        id: 14,
+        zh: "面对喜欢的东西，我会——",
+        en: "When I face something I really like, I will—",
+        options: [
+          { zh:"直接扑上去，抢到再说。", en:"Pounce first. Figure the rest out later.", add:{siamese:3,cow:2,tabby:2,ragdoll:0,maine:0,british:0,black:-1,chinchilla:-1}},
+          { zh:"先盯着看，确认没人跟我抢。", en:"Watch first and make sure nobody else is taking it.", add:{tabby:3,black:1,chinchilla:1,maine:1,ragdoll:0,siamese:0,british:0,cow:0}},
+          { zh:"表现得不明显，但会一直偷偷靠近。", en:"Act casual, but slowly keep moving closer.", add:{ragdoll:3,black:2,chinchilla:1,maine:0,siamese:0,british:0,tabby:0,cow:0}},
+          { zh:"嘴上不稀罕，身体已经诚实过去了。", en:"Pretend I don’t care, while my body heads right over.", add:{chinchilla:2,siamese:2,ragdoll:1,cow:1,black:0,maine:0,british:0,tabby:0}},
+          { zh:"真喜欢的话，反而会有点谨慎。", en:"If I truly like it, I become more careful.", add:{chinchilla:3,ragdoll:2,black:1,tabby:1,maine:0,siamese:-1,british:0,cow:-1}}
+        ]
+      },
+      {
+        id: 16,
+        zh: "最不能惹到本猫的地方是——",
+        en: "The quickest way to annoy me is—",
+        options: [
+          { zh:"我正吃着呢，你还来烦我。", en:"Bothering me while I’m eating.", add:{tabby:3,siamese:1,british:1,ragdoll:0,maine:0,black:0,cow:0,chinchilla:0}},
+          { zh:"睡着了还把我弄醒，啥意思？", en:"Waking me up for no good reason.", add:{british:3,chinchilla:2,ragdoll:1,maine:0,black:0,cow:-1,tabby:0,siamese:-1}},
+          { zh:"我已经往后退了，你还非要贴上来。", en:"I already backed away and you still kept coming closer.", add:{black:3,tabby:2,chinchilla:1,maine:1,ragdoll:-1,siamese:0,british:0,cow:0}},
+          { zh:"不许动本喵的东西。", en:"Touching my stuff.", add:{maine:3,tabby:2,black:1,ragdoll:0,siamese:0,british:0,cow:0,chinchilla:0}},
+          { zh:"一会儿来逗我，一会儿又不理我。", en:"Giving me attention, then suddenly ignoring me.", add:{ragdoll:3,chinchilla:2,siamese:1,maine:0,black:0,british:0,cow:0,tabby:-1}},
+          { zh:"当着我的面摸别的小猫。", en:"Petting another cat right in front of me.", add:{chinchilla:3,siamese:2,ragdoll:1,maine:0,black:0,british:0,cow:0,tabby:-1}}
+        ]
+      },
+      {
+        id: 17,
+        zh: "好朋猫饿得喵喵叫，你的反应是——",
+        en: "A close cat friend is meowing from hunger. My reaction is—",
+        options: [
+          { zh:"我这儿还有两口，先垫吧垫吧。", en:"I still have a few bites left. Here, have some.", add:{ragdoll:3,british:1,chinchilla:1,ragdoll2:0,black:-1,tabby:0,cow:0,maine:0,siamese:0}},
+          { zh:"这附近没罐头香味吗，自己闻着去找。", en:"Can’t you smell where the food is? Go find it.", add:{tabby:3,maine:1,black:1,ragdoll:-1,siamese:0,british:0,cow:0,chinchilla:0}},
+          { zh:"走走走，一起去厨房门口蹲着，等人类心虚。", en:"Come on, let’s sit by the kitchen and guilt the humans together.", add:{siamese:3,cow:2,tabby:1,ragdoll:1,black:0,maine:0,british:0,chinchilla:-1}},
+          { zh:"先忍忍嘛，饿一会儿又不会立刻变小猫干。", en:"Just hold on a bit. You won’t turn into dried kitten immediately.", add:{british:3,maine:1,chinchilla:1,ragdoll:0,black:0,cow:0,tabby:0,siamese:-1}},
+          { zh:"走，我带你去翻翻，看哪里有能吃的。", en:"Come with me, I’ll help you look for food.", add:{tabby:3,ragdoll:1,siamese:1,cow:1,black:0,maine:0,british:0,chinchilla:-1}},
+          { zh:"你先别叫了，叫得我都跟着有点饿。", en:"Could you stop meowing? You’re making me hungry too.", add:{maine:2,chinchilla:2,british:1,ragdoll:0,siamese:0,black:0,cow:0,tabby:0}}
+        ]
+      },
+      {
+        id: 18,
+        zh: "说到活动筋骨，本猫一般是——",
+        en: "When it comes to moving my body, I’m usually—",
+        options: [
+          { zh:"跑！蹿！跳！", en:"Run! Dash! Jump!", add:{siamese:3,cow:2,tabby:2,ragdoll:-1,british:-1,black:0,maine:0,chinchilla:-1}},
+          { zh:"风雨无法撼动我睡觉的决心。", en:"Nothing can shake my commitment to sleeping.", add:{british:3,chinchilla:2,ragdoll:1,black:0,cow:-1,tabby:-1,maine:0,siamese:-1}},
+          { zh:"慢慢走、伸伸爪，活动活动就差不多了。", en:"A slow walk, a stretch, and that’s enough exercise.", add:{british:3,ragdoll:2,chinchilla:1,tabby:0,black:0,maine:0,siamese:0,cow:-1}},
+          { zh:"要么不动，要么跑酷。", en:"Either no movement at all, or full parkour.", add:{cow:3,siamese:1,tabby:1,ragdoll:-1,maine:0,british:0,black:0,chinchilla:-1}},
+          { zh:"晚安。", en:"Good night.", add:{british:3,ragdoll:1,black:1,chinchilla:1,maine:0,tabby:-1,siamese:-1,cow:-1}},
+          { zh:"白天省电，晚上发疯，这很合理吧。", en:"Saving energy by day, losing it by night. Perfectly reasonable.", add:{black:3,cow:2,siamese:1,ragdoll:-1,maine:0,british:0,tabby:0,chinchilla:0}}
+        ]
+      },
+      {
+        id: 20,
+        zh: "真要出门玩，本猫比较适合在——",
+        en: "If I were to go out and have fun, I’d probably be best at—",
+        options: [
+          { zh:"白天，亮堂堂的，正适合到处晃。", en:"Daytime, when everything is bright and easy to roam around.", add:{tabby:3,siamese:2,cow:1,ragdoll:0,maine:0,british:0,chinchilla:0,black:-1}},
+          { zh:"傍晚，比较有感觉。", en:"Around dusk. Better atmosphere.", add:{chinchilla:2,black:2,ragdoll:1,british:1,maine:0,siamese:0,cow:0,tabby:0}},
+          { zh:"不到晚上不出门。", en:"I don’t go out before nightfall.", add:{black:3,cow:2,chinchilla:1,ragdoll:-1,maine:0,siamese:0,british:0,tabby:0}},
+          { zh:"几点都行，真有局就喊我。", en:"Just call me.", add:{siamese:3,ragdoll:1,cow:1,tabby:1,maine:0,british:0,black:-1,chinchilla:-1}},
+          { zh:"不是不出，是缓出、慢出、优出。", en:"It’s not that I won’t go out. I just prefer to go out slowly and elegantly.", add:{chinchilla:3,ragdoll:1,british:1,black:1,maine:0,tabby:0,siamese:-1,cow:-1}},
+          { zh:"下过雨最好，空气里全是新鲜味道。", en:"Right after rain. The air smells brand new.", add:{tabby:3,black:2,chinchilla:1,ragdoll:0,maine:0,siamese:0,british:0,cow:0}}
+        ]
+      }
+    ];
+
+    // cleanup any accidental helper key in options
+    questionsMaster.forEach(q => q.options.forEach(o => { delete o.add.ragdoll2; }));
+
+    let currentLang = "zh-Hans";
+    let currentPage = "home";
+    let questionOrder = [];
+    let currentIndex = 0;
+    let selectedHistory = [];
+    let scores = {};
+    let currentResult = null;
+    let detailOpen = false;
+    let galleryIndex = 0;
+
+    function resetScores() {
+      scores = {ragdoll:0, maine:0, siamese:0, british:0, black:0, cow:0, tabby:0, chinchilla:0};
+    }
+
+    function shuffleArray(arr){
+      const copy = [...arr];
+      for(let i=copy.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [copy[i],copy[j]]=[copy[j],copy[i]];
+      }
+      return copy;
+    }
+
+    function ensureCN(text){
+      if(currentLang === "zh-Hant" && window.OpenCC){
+        const converter = OpenCC.Converter({from:'cn', to:'tw'});
+        return converter(text);
+      }
+      return text;
+    }
+
+    function getText(obj){
+      if(currentLang === "en") return obj.en;
+      return ensureCN(obj.zh);
+    }
+
+    function getCreatorURL(){ return currentLang === "en" ? creatorUrls.en : creatorUrls.zh; }
+
+    function setLang(lang){
+      currentLang = lang;
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      renderAll();
+    }
+
+    function renderAll(){
+      renderHome();
+      if(currentPage === 'quiz') renderQuestion();
+      if(currentPage === 'result') renderResult();
+      if(currentPage === 'gallery') renderGallery();
+    }
+
+    function renderHome(){
+      const t = currentLang === 'en' ? uiText.en : uiText["zh-Hans"];
+      document.getElementById('homeBrand').innerText = currentLang === 'en' ? t.homeBrand : ensureCN(t.homeBrand);
+      document.getElementById('homeTitle').innerHTML = currentLang === 'en' ? t.homeTitle : ensureCN(t.homeTitle);
+      document.getElementById('homeSubtitle').innerText = currentLang === 'en' ? t.homeSubtitle : ensureCN(t.homeSubtitle);
+      document.getElementById('startBtn').innerText = currentLang === 'en' ? t.startBtn : ensureCN(t.startBtn);
+      const prefix = currentLang === 'en' ? t.creatorPrefix : ensureCN(t.creatorPrefix);
+      const handle = currentLang === 'en' ? t.creatorHandle : ensureCN(t.creatorHandle);
+      document.getElementById('homeCreator').innerHTML = `${prefix} <a href="${getCreatorURL()}" target="_blank">${handle}</a>`;
+      document.getElementById('loadingText').innerText = currentLang === 'en' ? t.loading : ensureCN(t.loading);
+    }
+
+    function startQuiz(){
+      questionOrder = shuffleArray(questionsMaster.map((_,i)=>i));
+      currentIndex = 0;
+      selectedHistory = [];
+      resetScores();
+      currentResult = null;
+      detailOpen = false;
+      showLoadingThenQuiz();
+    }
+
+    function showLoadingThenQuiz(){
+      const layer = document.getElementById('loading-layer');
+      const video = document.getElementById('loading-video');
+      layer.classList.remove('hidden');
+      if(video){
+        video.currentTime = 0;
+        const p = video.play();
+        if(p!==undefined){ p.catch(()=>{}); }
+      }
+      setTimeout(()=>{
+        layer.classList.add('hidden');
+        showPage('quiz');
+      }, 2200);
+    }
+
+    function showPage(id){
+      currentPage = id;
+      ['home','quiz','result','gallery'].forEach(pid=>{
+        document.getElementById(pid).classList.toggle('hidden', pid!==id);
+      });
+      if(id==='quiz') renderQuestion();
+      if(id==='result') renderResult();
+      if(id==='gallery') renderGallery();
+    }
+
+    function goHome(){ showPage('home'); }
+    function showResult(){ showPage('result'); }
+    function showGallery(){ galleryIndex = 0; showPage('gallery'); }
+
+    function currentQuestion(){
+      return questionsMaster[questionOrder[currentIndex]];
+    }
+
+    function renderQuestion(){
+      const q = currentQuestion();
+      const t = currentLang === 'en' ? uiText.en : uiText["zh-Hans"];
+      const factPool = currentLang === 'en' ? coldFacts.en : coldFacts["zh-Hans"];
+      const fact = factPool[currentIndex % factPool.length];
+      document.getElementById('quizTip').innerText = currentLang === 'en' ? fact : ensureCN(fact);
+      document.getElementById('progressText').innerText = `${currentIndex + 1} / ${questionOrder.length}`;
+      document.getElementById('questionTitle').innerText = currentLang === 'en' ? q.en : ensureCN(q.zh);
+      document.getElementById('prevBtn').innerText = currentLang === 'en' ? t.prevQuestion : ensureCN(t.prevQuestion);
+      document.getElementById('prevBtn').classList.toggle('hidden', currentIndex === 0);
+      const pct = ((currentIndex + 1) / questionOrder.length) * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('catRunner').style.left = pct + '%';
+      const box = document.getElementById('optionsBox');
+      box.innerHTML = '';
+      q.options.forEach((opt, idx)=>{
+        const btn = document.createElement('button');
+        btn.className = 'option-btn ' + (currentLang === 'en' ? 'en' : 'cn');
+        btn.textContent = currentLang === 'en' ? opt.en : ensureCN(opt.zh);
+        btn.onclick = ()=> answerQuestion(idx);
+        box.appendChild(btn);
+      });
+    }
+
+    function applyAdd(add, sign=1){
+      Object.keys(scores).forEach(k=>{
+        scores[k] += (add[k] || 0) * sign;
+      });
+    }
+
+    function answerQuestion(optIndex){
+      const q = currentQuestion();
+      const opt = q.options[optIndex];
+      applyAdd(opt.add, 1);
+      selectedHistory.push(optIndex);
+      currentIndex++;
+      if(currentIndex >= questionOrder.length){
+        calculateResult();
+        showPage('result');
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function prevQuestion(){
+      if(currentIndex <= 0) return;
+      currentIndex--;
+      const prevQ = questionsMaster[questionOrder[currentIndex]];
+      const prevOptIndex = selectedHistory.pop();
+      applyAdd(prevQ.options[prevOptIndex].add, -1);
+      renderQuestion();
+    }
+
+    function calculateResult(){
+      const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+      const total = sorted.reduce((sum, [,v])=>sum + Math.max(0, v), 0) || 1;
+      currentResult = {
+        main: sorted[0][0],
+        rankings: sorted.slice(0,3).map(([k,v])=>({key:k, score:v, pct: Math.round(Math.max(0,v) / total * 100)}))
       };
-
-      const catData = {
-        ragdoll: {
-          zh: {
-            name: "布偶貓 ☁️",
-            tags: ["溫柔", "慢熱", "喜歡陪伴", "情緒穩定"],
-            short: "软乎乎贴贴怪",
-            desc: [
-              "當你把布偶貓抱起来，它的身体会整个放松，像一袋刚晒完太阳的棉花，软软地靠在你的臂弯里。一张睡熟的毯子、一个固定的饭碗、每天同一时间出现的抚摸，这些小事能让它很安心。它不喜欢被搬来搬去，也不喜欢今天这个人抱、明天那个人逗。它想要的是稳定的气味和不变的节奏。",
-              "你也是这样。你不擅长把情绪闹得很大，如果不開心多半會自己憋著。不喜欢一惊一乍的感情，也不喜欢忽远忽近的人。你愿意花时间慢慢靠近別人，慢慢交出自己。你的世界里没有太多大起大落。你更在意的是今天有没有好好吃一顿饭、晚上有没有一段安静的时光、身边有没有一个让你觉得安全的存在。",
-              "你不喜欢過於激情的碰撞，也不急着表态，但你心里有自己的温度。认准了一个窝、一种味道、一个愿意陪着你的人，你就会把自己舒舒服服地摊开。你适合温柔、安稳、慢慢靠近的关系，也值得被认真对待。"
-            ]
-          },
-          en: {
-            name: "Ragdoll ☁️",
-            tags: ["Gentle", "Slow-to-warm", "Companionable", "Emotionally Stable"],
-            short: "A soft soul seeking a steady heart.",
-            desc: [
-              "When you pick up a Ragdoll, its body relaxes completely, like a bag of sun-warmed cotton resting softly in your arms. A cozy blanket, a familiar food bowl, and a predictable routine of affection—these small certainties are what bring them peace. They dislike being shuffled around or handled by a revolving door of strangers. What they crave is a consistent scent and an unchanging rhythm.",
-              "You share this temperament. You aren't one to make a scene; if you’re upset, you’re more likely to keep it to yourself. You have little patience for high-drama emotions or people who blow hot and cold. You prefer to take your time—gradually approaching others and slowly revealing your true self. Your world isn't defined by grand highs or lows. Instead, you find meaning in the quiet essentials: whether you had a decent meal, a moment of tranquility at night, or the presence of someone who makes you feel secure.",
-              "You avoid volatile intensity and feel no rush to take a stand, yet you possess a profound inner warmth. Once you’ve settled into a nest, a familiar scent, or a person you trust, you allow yourself to fully unwind. You are built for gentle, stable, and slow-burning relationships—and you deserve to be treated with the utmost care."
-            ]
-          }
-        },
-        maine: {
-          zh: {
-            name: "缅因貓 🐾",
-            tags: ["穩重", "氣勢強大", "可靠", "有邊界"],
-            short: "自带主场气质",
-            desc: [
-              "缅因猫给人的感觉挺特别：块头大，气场稳。它們不用刻意抢镜，往那儿一站就自帶吸引力。",
-              "你们有着相同的性格特质，你一般有自己的秩序感和分寸感。关键时刻不一定是第一个冲出去，但你总能接住场子、守住边界、把乱七八糟的事理清楚。",
-              "你对“我的节奏、我的东西”有种天然的主场意识，也不喜欢别人随便越线。"
-            ]
-          },
-          en: {
-            name: "Maine Coon 🐾",
-            tags: ["Steady", "Owns the room", "Reliable", "Has boundaries"],
-            short: "Built-in main character territory",
-            desc: [
-              "Maine Coons possess a truly distinctive presence: they are large, composed, and never feel the need to vamp for attention. By simply standing in a room, they exert a quiet authority that makes them seem in complete command of the space.",
-              "You share this same temperament. You might not be the first to scramble into the spotlight, but when it truly matters, you are the one who stabilizes the situation, maintains boundaries, and resolves the chaos.",
-              "You have a keen, almost instinctual awareness of your personal domain—your sanctuary, your rhythm, and your belongings—and you possess little patience for those who encroach upon them."
-            ]
-          }
-        },
-        siamese: {
-          zh: {
-            name: "暹羅貓 🗣️",
-            tags: ["貪玩", "真性情", "大方"],
-            short: "有话我是真说",
-            desc: [
-              "暹罗猫是出了名的爱表达。它们爱叫、爱玩，對周遭新鮮事物充滿好奇。你也是这样，你不喜歡孤單，需要回应、需要被看见，憋着不说那是不可能的，有想法就要馬上説出來。",
-              "你也很關注他人的感受，能和大部分人相處融洽，可以很快地融入新環境，是比較隱藏的社交達人。",
-              "你完全無法忍受让你一直忍着、收着、做小伏低的那种关系。你觉得行就行，不行就不行，如果今天说好明天又说算了，你馬上就會炸毛。好恶分明，不装模作样，也不喜欢别人跟你绕弯子。"
-            ]
-          },
-          en: {
-            name: "Siamese 🗣️",
-            tags: ["Playful", "Authentic", "Outgoing"],
-            short: "Always candid, never scripted.",
-            desc: [
-              "Siamese cats are famously vocal. They are energetic, playful, and endlessly curious about the world around them. You share this vibrant spirit. You dislike being alone and thrive on interaction; you need to be heard and seen. Staying silent simply isn't an option for you—if you have a thought, you express it immediately.",
-              "You are also highly attuned to others’ feelings, which allows you to get along with almost anyone and adapt quickly to new environments; you are something of an under-the-radar social butterfly.",
-              "What you cannot tolerate, however, is any relationship that forces you to suppress your true self or play second fiddle. To you, things are either a go or they aren't. If someone agrees to a plan today only to flake tomorrow, you'll lose your cool instantly. You are clear about your likes and dislikes, you never put on an act, and you have zero patience for people who beat around the bush."
-            ]
-          }
-        },
-        british: {
-          zh: {
-            name: "英短藍貓 💤",
-            tags: ["鬆弛", "省電模式", "懶懶的", "自有節奏"],
-            short: "先躺为敬",
-            desc: [
-              "英短蓝猫有一种天生的从容，常常带着一种“没什么大事”的安逸。舒服对它们来说是一种正经追求。一个软软的垫子，一缕午后的阳光，一顿安静的饭，就足够让它们心满意足地眯上眼睛。",
-              "你和英短藍貓一樣，身上有一种让人放松的气场，跟你待在一起不用绷着。你不抢话，不急着证明什么，你有自己的節奏，别人催你的时候你会笑笑，然后该怎样还是怎样。大部分事情在你们眼里都不值得大动干戈。别人跑来跑去的时候，你們可能正翻着肚皮睡午觉。",
-              "你喜欢舒服的东西，比如柔软的布料、宽松的行程、不用解释的关系。你不喜欢被拖着走。聚会很好，不過久了你就会找个角落坐下。但你不是懒，你是把力气留给了真正在乎的事情。工作上该认真的时候你一点不马虎，朋友需要的时候你也会出现。只是平时你更喜欢把电量耗在让自己舒服的事情上，比如发呆、吃好吃的、或者什么也不干。和你在一起會莫名覺得很安心。"
-            ]
-          },
-          en: {
-            name: "British Shorthair Blue 💤",
-            tags: ["Relaxed", "Steady", "A little lazy", "Moves at own pace"],
-            short: "This cat will lie down first, thank you",
-            desc: [
-              "British Shorthairs possess a natural composure, often carrying an air of quiet contentment as if nothing is ever a big deal. For them, comfort is a serious pursuit. A plush cushion, a beam of afternoon sunlight, or a peaceful meal—these are enough to make them narrow their eyes in pure satisfaction.",
-              "Like the British Shorthair, you exude a relaxing aura that allows others to unwind in your presence. You don’t feel the need to interrupt or constantly prove your worth; you move at your own pace. When others try to rush you, you simply offer a smile and carry on as usual. In your eyes, most things aren't worth making a fuss over. While everyone else is scurrying about, you’re likely taking a nap with your belly up.",
-              "You have a refined taste for comfort—soft fabrics, a flexible schedule, and relationships that require no explanation. You dislike being dragged along by others' agendas. While social gatherings are fine, you’ll eventually find a quiet corner to retreat to. However, this isn't laziness; it's a selective expenditure of energy. You are never careless when it comes to meaningful work, and you are always there when a friend truly needs you. You simply prefer to reserve your battery for the things that bring you peace—whether that’s daydreaming, enjoying good food, or doing absolutely nothing. Being around you brings a profound sense of security."
-            ]
-          }
-        },
-        black: {
-          zh: {
-            name: "黑貓 🖤",
-            tags: ["神秘", "警觉", "敏感", "感知很强"],
-            short: "暗中观察",
-            desc: [
-              "黑猫身上有一种说不清的气质。白天它们安安静静，常常窝在窗帘后面或者角落里；到了夜里，它们突然就换了一种状态。它們不太爱在人前晃来晃去，对光线、声音、气味都很敏感，一点点变化就能察觉到。",
-              "你和黑貓一樣，不一定社恐，但确实需要自己的空间。你更习惯一个人待着，做自己的事，想自己的问题。深夜里你更容易想清楚事情，也更容易放松。你的很多好想法、好情绪，都是在别人已经睡着的时候冒出来的。",
-              "你的感觉比大多数人细。别人注意不到的细节你一眼就看到，别人听不出的语气你一下子就感觉到了。你需要不追问你不想说的，不逼你参加不想去的局，也不会因为你偶尔消失几天就觉得你冷漠的人。如果沒有這種人，那乾脆自己待著就好。不喜欢随便跟人掏心掏肺，因为不是每个人都接得住。"
-            ]
-          },
-          en: {
-            name: "Black Cat 🖤",
-            tags: ["Mysterious", "Alert", "Sensitive", "Highly perceptive"],
-            short: "Observing from the shadows.",
-            desc: [
-              "Black cats possess an indescribable aura. During the day, they remain serene, often tucked away behind curtains or in quiet corners; yet, as night falls, they undergo a striking transformation. They aren't the type to linger for attention; instead, they are hyper-aware of their surroundings, detecting the slightest shifts in light, sound, or scent.",
-              "Much like a black cat, you aren't necessarily antisocial, but you have an absolute requirement for personal space. You prefer your own company, navigating your thoughts and projects in solitude. The depth of the night is where you find your clarity and relaxation—it’s during these quiet hours, while others sleep, that your best ideas and emotions typically surface.",
-              "Your perception is sharper than most. You notice the subtle details others overlook and catch the hidden nuances in someone’s tone instantly. You seek connections with those who don't pry into your secrets, who don't force you into social circles, and who understand that your occasional disappearance isn't a sign of coldness. If such understanding isn't available, you are perfectly content being alone. You rarely wear your heart on your sleeve, knowing that not everyone is equipped to handle your depth."
-            ]
-          }
-        },
-        cow: {
-          zh: {
-            name: "奶牛貓 ⚡",
-            tags: ["抽象", "跳脫", "精力旺", "很難預測"],
-            short: "抽象派活体艺术",
-            desc: [
-              "奶牛猫的精力非常旺盛。它们上一秒还蜷在沙发上像一摊抹布，下一秒就突然窜起来满屋狂奔，撞倒水杯、踢翻遥控器、踩过你的键盘然后扬长而去。你永远猜不到它们下一步要干什么。安静和发疯之间没有过渡，中间那根弦说断就断。",
-              "你和奶牛貓一樣，腦袋永远在转，有时候转得很有条理，有时候纯粹是在瞎转。你很难一直待在同一个状态里，坐久了想动，动久了想瘫，瘫久了又想搞点事情。",
-              "你的情绪来得快也去得快。开心的时候很闹腾，丧的时候也很明显，但通常不会闷太久。无聊对你来说簡直是世界上难受的。你宁愿搞砸一件事，也不想什么事都不做。你需要足够多的新鲜感和刺激，你需要有回应的关系、还有足够大的空间让你随便疯。"
-            ]
-          },
-          en: {
-            name: "Cow Cat ⚡",
-            tags: ["Abstract", "Eccentric", "High-energy", "Unpredictable"],
-            short: "A living piece of abstract art.",
-            desc: [
-              "Cow cats are a whirlwind of energy. One moment, they are curled up on the sofa like a limp rag; the next, they are darting across the room at full speed—knocking over water glasses, flipping remote controls, and sprinting across your keyboard before making a grand exit. You can never guess their next move. For them, there is no transition between calm and chaos; the switch simply flips without warning.",
-              "Much like a cow cat, your mind is constantly racing—sometimes with perfect logic, and other times in circles for no reason at all. You find it difficult to remain in one state for long: if you sit too long, you need to move; if you move too long, you want to collapse; and if you stay collapsed, you feel the urge to stir up some trouble.",
-              "Your emotions are as fleeting as they are intense. You are boisterous when happy and visibly low when upset, but you rarely dwell on gloom for long. To you, boredom is the ultimate torment. You would rather mess something up than do nothing at all. You crave novelty and excitement; you need responsive relationships and a vast enough space to let your wild side roam free."
-            ]
-          }
-        },
-        tabby: {
-          zh: {
-            name: "狸花貓 🌿",
-            tags: ["机灵", "警觉", "随机应变"],
-            short: "全能型小咪",
-            desc: [
-              "狸花猫是一种非常“会过日子”的猫。它们从小就知道什么东西能吃、什么地方能睡、什么人可以靠近。你很少看到狸花猫把自己搞得很狼狈，它们总是有办法在复杂的环境里找到最舒服的那块地方。这种猫的观察力很强，对危险和机会的判断很快。你也一樣，对周围的人和事有一种天然的判断力，谁靠谱、谁不靠谱，你心里很快就有数。别人画饼的时候你会笑着听，但心里早就翻了个白眼。",
-              "狸花猫也很会照顾自己。饿了会找人，冷了会钻被窝，被欺负了会还手。它们不依赖别人活着，但也不拒绝别人的好意。你给它们吃的，它们会记住；你对它们不好，它们也会记住，下次绕着走。",
-              "你也会护住自己的东西。你的时间、你的精力、你的地盘，你分得很清楚。别人可以跟你合作，但不能随便占你便宜。你不爱惹事，但也不怕事，該出手時就出手。"
-            ]
-          },
-          en: {
-            name: "Tabby Cat 🐈",
-            tags: ["Resourceful", "Alert", "Adaptable"],
-            short: "The master of getting by.",
-            desc: [
-              "The Tabby is a cat that truly understands the art of living. From a young age, they possess an innate sense of what works and what doesn't—knowing exactly which spots are the warmest and which people are worth approaching. You’ll rarely find a Tabby in a tight spot; they have a knack for navigating complex environments to find their own comfort zone. Their observational skills are razor-sharp, allowing them to size up risks and opportunities in an instant.",
-              "You share this sharp intuition. You have an uncanny ability to read the room—you know exactly who is reliable and who is just blowing smoke. When others try to sell you big dreams, you listen with a polite smile, while inwardly, you’ve already assessed the reality of the situation.",
-              "Tabbies are exceptionally self-reliant. They know how to ask for what they need, but they never lose their independence. They appreciate kindness but never forget a slight; if you treat them well, they’ll remember, but if you cross them, they’ll simply move on and keep their distance. You are equally protective of your boundaries. Your time, energy, and personal space are yours alone. While you are open to collaboration, you have zero tolerance for being taken advantage of. You don’t go looking for trouble, but you aren't one to back down either—you know exactly when it’s time to take a stand."
-            ]
-          }
-        },
-        chinchilla: {
-          zh: {
-            name: "金吉拉 ✨",
-            tags: ["有审美", "要体面", "不凑合", "重感觉"],
-            short: "请认真对待我",
-            desc: [
-              "金吉拉是一种对“舒服”很有要求的猫。它们喜欢软软的垫子、顺滑的抚摸、安静的角落。粗糙的东西、急躁的动作、吵闹的环境，它们会直接走开，毫不掩饰自己的不情愿。不太容易跟人热络起来。金吉拉不喜欢邋遢，总是把自己打理得整整齐齐。",
-              "你就像金吉拉一樣，对生活有要求，不是那种“随便啦都行”的人。吃饭的馆子、穿的衣服、住的地方、交的朋友，你心里都有杆秤。不是说一定要多贵多高级，但一定要对得上你的感觉。你不想把时间花在凑合的事情上。一件东西不够喜欢，你会继续等；一个人不够合拍，你不会勉强自己。你宁愿一个人安静地待着，也不要跟不合适的人硬凑在一起。",
-              "你也很在意别人怎么对待你。随便的态度、敷衍的回应、粗糙的照顾，你都感觉得到，而且你绝不会假装没感觉。你需要的不是多热烈的讨好，而是那种认真的、有分寸的、愿意了解你标准的人。金吉拉只肯踏进最柔软的垫子，你也只该把心交给让你觉得“舒服”的人。"
-            ]
-          },
-          en: {
-            name: "Chinchilla Longhair ✨",
-            tags: ["Aesthetic", "Dignified", "Uncompromising", "Intuitive"],
-            short: "Take me seriously, or not at all.",
-            desc: [
-              "The Chinchilla is a cat with exceptionally high standards for comfort. They gravitate toward plush cushions, gentle strokes, and tranquil corners. Anything coarse, rushed, or chaotic will prompt them to walk away, making no effort to hide their distaste. They don't easily warm up to strangers. Known for their fastidious nature, Chinchillas are always impeccably groomed.",
-              "Much like a Chinchilla, you have a clear vision for your life; you are far from a whatever works kind of person. Whether it's the restaurants you frequent, the clothes you wear, or the friends you keep, you have an internal scale for quality. It’s not necessarily about luxury, but about whether something resonates with your personal aesthetic. You refuse to spend your time on things that are just okay. If an object doesn't spark joy, you’d rather wait; if a person doesn't align with your rhythm, you won’t force a connection. You’d much rather be alone in peace than endure a mismatched crowd.",
-              "You are also highly sensitive to how others treat you. Casual indifference, dismissive responses, or clumsy care—you sense it all instantly, and you never pretend otherwise. You don’t seek grand gestures of flattery; instead, you crave someone who is sincere, mindful, and willing to understand your standards. Just as a Chinchilla only steps onto the softest of cushions, you should only give your heart to those who make you feel truly at ease."
-            ]
-          }
-        }
-      };
-
-      const encyclopediaData = [
-        "ragdoll",
-        "maine",
-        "siamese",
-        "british",
-        "black",
-        "cow",
-        "tabby",
-        "chinchilla"
-      ];
-
-      const questions = [
-        {
-          zh: "混进人类家里，我最关心——",
-          en: "If I sneaked into a human house, the first thing I’d care about is—",
-          options: [
-            { zh: "这里有啥好吃好玩的呢？", en: "What’s fun here, and what can I eat?", add: { ragdoll: 0, maine: 0, siamese: 3, british: 1, black: -1, cow: 2, tabby: 2, chinchilla: -1 } },
-            { zh: "人类先别碰我啊！", en: "Human, hands off for now.", add: { ragdoll: -1, maine: 1, siamese: -1, british: 0, black: 3, cow: 0, tabby: 2, chinchilla: 1 } },
-            { zh: "有没有美味猫粮？", en: "Is there any good cat food here?", add: { ragdoll: 1, maine: 0, siamese: 1, british: 3, black: 0, cow: 0, tabby: 2, chinchilla: 1 } },
-            { zh: "放我走！我要自由！", en: "Let me out! I want freedom!", add: { ragdoll: -1, maine: 1, siamese: 1, british: -1, black: 2, cow: 2, tabby: 3, chinchilla: -1 } },
-            { zh: "原地摊开，我是一张猫饼。", en: "Flop on the floor. I am now a cat loaf.", add: { ragdoll: 2, maine: 0, siamese: -1, british: 3, black: -1, cow: -1, tabby: -1, chinchilla: 1 } }
-          ]
-        },
-        {
-          zh: "我理想中的窝应该是——",
-          en: "My ideal sanctuary should be...",
-          options: [
-            { zh: "当然要在可以偶尔骚扰人类的位置！", en: "Somewhere I can occasionally bother my humans.", add: { ragdoll: 2, maine: 0, siamese: 3, british: 1, black: -1, cow: 1, tabby: 0, chinchilla: 0 } },
-            { zh: "高，高一点，再高一点，本喵要俯视众生！", en: "High. Higher. Even higher — I thrive on surveying my domain.", add: { ragdoll: -1, maine: 3, siamese: 1, british: 0, black: 2, cow: 1, tabby: 1, chinchilla: 1 } },
-            { zh: "在角落里，本咪需要个猫空间。", en: "A secluded corner; this kitty values personal boundaries.", add: { ragdoll: 0, maine: 1, siamese: -1, british: 0, black: 3, cow: 0, tabby: 2, chinchilla: 2 } },
-            { zh: "靠窗，方便观察世界。", en: "By the window, quietly observing the world.", add: { ragdoll: 1, maine: 1, siamese: 0, british: 1, black: 2, cow: 0, tabby: 2, chinchilla: 1 } },
-            { zh: "今天睡这里，明天睡那里，主打一个流浪艺术家。", en: "Ever-changing; I’m a free-spirited wanderer at heart.", add: { ragdoll: -1, maine: 0, siamese: 1, british: -1, black: 2, cow: 3, tabby: 2, chinchilla: 0 } }
-          ]
-        },
-        {
-          zh: "有人想来摸我——",
-          en: "Someone wants to pet me—",
-          options: [
-            { zh: "来啊，摸这里，这里，还有下巴。", en: "Go ahead. Here, here, and under the chin too.", add: { ragdoll: 3, maine: 0, siamese: 2, british: 1, black: -1, cow: 1, tabby: -1, chinchilla: 0 } },
-            { zh: "你长得好看吗？先让我看看。", en: "Are you good-looking enough? Let me check first.", add: { ragdoll: 0, maine: 0, siamese: 1, british: 0, black: 0, cow: 1, tabby: -1, chinchilla: 3 } },
-            { zh: "溜了溜了。", en: "Nope. I’m out.", add: { ragdoll: -1, maine: 0, siamese: -1, british: 0, black: 3, cow: 1, tabby: 2, chinchilla: 0 } },
-            { zh: "吃我一记喵喵拳！", en: "Take this meow meow punch!", add: { ragdoll: -1, maine: 1, siamese: 3, british: -1, black: 1, cow: 2, tabby: 1, chinchilla: -1 } },
-            { zh: "只能摸一下。", en: "One touch only.", add: { ragdoll: 0, maine: 1, siamese: 0, british: 0, black: 1, cow: -1, tabby: 0, chinchilla: 3 } }
-          ]
-        },
-        {
-          zh: "深夜两点，人类睡了，我——",
-          en: "At 2 a.m., the humans are asleep, and I—",
-          options: [
-            { zh: "贴地狂奔！踹翻全世界的水杯！", en: "Sprint across the floor and knock over every water cup in sight!", add: { ragdoll: -1, maine: 0, siamese: 2, british: -1, black: 1, cow: 3, tabby: 1, chinchilla: -1 } },
-            { zh: "安静蹲在窗边。", en: "Sit quietly by the window.", add: { ragdoll: 0, maine: 1, siamese: -1, british: 0, black: 3, cow: 0, tabby: 1, chinchilla: 1 } },
-            { zh: "就要和铲屎官挨在一起。", en: "Insist on curling up next to my human.", add: { ragdoll: 3, maine: 0, siamese: 1, british: 2, black: -1, cow: 0, tabby: -1, chinchilla: 0 } },
-            { zh: "猫老大爱去哪就去哪，少管我！", en: "The boss cat goes where it wants. Mind your business.", add: { ragdoll: -1, maine: 1, siamese: 1, british: 0, black: 2, cow: 2, tabby: 2, chinchilla: -1 } },
-            { zh: "认真舔毛。", en: "Groom myself with full dedication.", add: { ragdoll: 1, maine: 0, siamese: -1, british: 1, black: 1, cow: -1, tabby: 0, chinchilla: 3 } }
-          ]
-        },
-        {
-          zh: "心情不好的时候——",
-          en: "When I’m in a bad mood—",
-          options: [
-            { zh: "谁都别碰我！", en: "Nobody touch me.", add: { ragdoll: -1, maine: 1, siamese: 1, british: 0, black: 3, cow: 1, tabby: 1, chinchilla: 0 } },
-            { zh: "有没有人陪陪我啊。", en: "Can someone stay with me for a bit?", add: { ragdoll: 3, maine: -1, siamese: 1, british: 1, black: 0, cow: 0, tabby: -1, chinchilla: 0 } },
-            { zh: "睡个大的。", en: "Take the biggest nap possible.", add: { ragdoll: 2, maine: 0, siamese: -1, british: 3, black: 0, cow: 0, tabby: -1, chinchilla: 1 } },
-            { zh: "该吃吃，该喝喝。", en: "Eat, drink, and carry on.", add: { ragdoll: 1, maine: 1, siamese: 0, british: 2, black: 0, cow: 0, tabby: 2, chinchilla: 0 } },
-            { zh: "吃点猫砂，装傻气死铲屎官。", en: "Do something baffling just to stress my human out.", add: { ragdoll: -1, maine: -1, siamese: 1, british: 0, black: 0, cow: 3, tabby: 0, chinchilla: -1 } }
-          ]
-        },
-        {
-          zh: "家里来了新猫做客——",
-          en: "A new cat visits the house—",
-          options: [
-            { zh: "欢迎您来！一起玩呀！", en: "Welcome! Come play with me!", add: { ragdoll: 2, maine: 0, siamese: 3, british: 0, black: -1, cow: 1, tabby: 0, chinchilla: -1 } },
-            { zh: "有吃的吗？", en: "Did they bring snacks?", add: { ragdoll: 0, maine: 0, siamese: 0, british: 2, black: 0, cow: 1, tabby: 3, chinchilla: -1 } },
-            { zh: "观察一下。", en: "Observe first.", add: { ragdoll: 0, maine: 1, siamese: -1, british: 0, black: 3, cow: 0, tabby: 2, chinchilla: 1 } },
-            { zh: "我只和漂亮猫玩。", en: "I only play with pretty cats.", add: { ragdoll: 0, maine: -1, siamese: 1, british: 0, black: 0, cow: 0, tabby: -1, chinchilla: 3 } },
-            { zh: "我会看当天心情决定要不要社交。", en: "Depends on my mood that day.", add: { ragdoll: 0, maine: 0, siamese: 0, british: 2, black: 1, cow: 1, tabby: 0, chinchilla: 2 } },
-            { zh: "关我什么事。", en: "How is that my problem?", add: { ragdoll: -1, maine: 1, siamese: -1, british: 1, black: 2, cow: 0, tabby: 1, chinchilla: 0 } }
-          ]
-        },
-        {
-          zh: "人类给的食物看起来好好吃——",
-          en: "The food the human gave me looks amazing—",
-          options: [
-            { zh: "我炫炫炫！", en: "I devour it immediately.", add: { ragdoll: 0, maine: 0, siamese: 1, british: 3, black: -1, cow: 1, tabby: 2, chinchilla: -1 } },
-            { zh: "有人喂到嘴边我就吃。", en: "If someone feeds me directly, sure.", add: { ragdoll: 3, maine: -1, siamese: 0, british: 1, black: -1, cow: 0, tabby: -1, chinchilla: 2 } },
-            { zh: "说不定有毒呢？你们先吃。", en: "Could be poisoned. You try it first.", add: { ragdoll: -1, maine: 1, siamese: -1, british: 0, black: 3, cow: 0, tabby: 2, chinchilla: 1 } },
-            { zh: "慢慢吃。", en: "I eat slowly.", add: { ragdoll: 1, maine: 0, siamese: -1, british: 2, black: 0, cow: -1, tabby: 0, chinchilla: 3 } },
-            { zh: "不食嗟来之食。", en: "I would rather starve than accept food given with contempt.", add: { ragdoll: -1, maine: 2, siamese: 0, british: 0, black: 1, cow: -1, tabby: 0, chinchilla: 3 } }
-          ]
-        },
-        {
-          zh: "靠在窗边，我的思绪——",
-          en: "Sitting by the window, my thoughts are—",
-          options: [
-            { zh: "晒太阳好舒服。", en: "The sunlight feels amazing.", add: { ragdoll: 2, maine: 0, siamese: 0, british: 3, black: 0, cow: 0, tabby: -1, chinchilla: 1 } },
-            { zh: "好想出去抓鸟哦！", en: "I really want to go out and catch birds.", add: { ragdoll: -1, maine: 1, siamese: 1, british: 0, black: 0, cow: 1, tabby: 3, chinchilla: -1 } },
-            { zh: "我睡睡睡。", en: "Sleep. Sleep more. Sleep forever.", add: { ragdoll: 1, maine: 0, siamese: -1, british: 3, black: 0, cow: 0, tabby: -1, chinchilla: 1 } },
-            { zh: "真没人陪我玩吗？", en: "Is nobody going to play with me?", add: { ragdoll: 2, maine: -1, siamese: 3, british: 0, black: 0, cow: 1, tabby: -1, chinchilla: 0 } },
-            { zh: "人类和猫为什么都没有翅膀？", en: "Why do neither humans nor cats have wings?", add: { ragdoll: 0, maine: 0, siamese: 0, british: 0, black: 3, cow: 2, tabby: 0, chinchilla: 1 } }
-          ]
-        },
-        {
-          zh: "听到奇怪动静，我——",
-          en: "When I hear a strange sound, I—",
-          options: [
-            { zh: "耳朵先转过去，身体不动。", en: "Turn my ears first, body stays still.", add: { ragdoll: 0, maine: 1, siamese: 0, british: 0, black: 2, cow: 0, tabby: 3, chinchilla: 0 } },
-            { zh: "立刻过去看，看到底什么东西敢打扰本喵。", en: "Go check immediately. Who dares disturb me?", add: { ragdoll: -1, maine: 1, siamese: 2, british: 0, black: 0, cow: 1, tabby: 3, chinchilla: -1 } },
-            { zh: "不知道发生了什么，但是先炸一下毛吧！", en: "No idea what happened, but I’m puffing up first.", add: { ragdoll: -1, maine: 0, siamese: 1, british: -1, black: 2, cow: 3, tabby: 1, chinchilla: -1 } },
-            { zh: "假装没听见，活着就行。", en: "Pretend I heard nothing. Survival first.", add: { ragdoll: 0, maine: 0, siamese: -1, british: 3, black: 1, cow: 0, tabby: 0, chinchilla: 1 } },
-            { zh: "什么动静啊！我先躲起来了！", en: "What was that? I’m hiding first!", add: { ragdoll: -1, maine: 0, siamese: -1, british: 0, black: 3, cow: 0, tabby: 2, chinchilla: 1 } }
-          ]
-        },
-        {
-          zh: "别猫骂我——",
-          en: "Another cat yells at me—",
-          options: [
-            { zh: "当场哈回去，输气势也不能输阵。", en: "Hiss back immediately. I may lose the fight, but not the attitude.", add: { ragdoll: -1, maine: 1, siamese: 3, british: 0, black: 1, cow: 2, tabby: 0, chinchilla: -1 } },
-            { zh: "呜呜呜求你别骂我了。", en: "Please stop yelling at me…", add: { ragdoll: 3, maine: -1, siamese: 0, british: 1, black: 0, cow: -1, tabby: -1, chinchilla: 0 } },
-            { zh: "偷吃两口猫粮，假装无事发生。", en: "Steal a few bites of food and act like nothing happened.", add: { ragdoll: 0, maine: -1, siamese: 0, british: 1, black: 0, cow: 3, tabby: 2, chinchilla: -1 } },
-            { zh: "懒得吵，你爱怎么样怎么样吧。", en: "Too lazy to argue. Do whatever you want.", add: { ragdoll: 0, maine: 1, siamese: -1, british: 3, black: 1, cow: 0, tabby: 0, chinchilla: 1 } },
-            { zh: "吃我一记喵喵拳！", en: "Take this meow meow punch!", add: { ragdoll: -1, maine: 0, siamese: 3, british: -1, black: 0, cow: 2, tabby: 1, chinchilla: -1 } }
-          ]
-        },
-        {
-          zh: "别猫靠近我的饭，我会——",
-          en: "If another cat comes near my food, I will—",
-          options: [
-            { zh: "开启狂炫模式。", en: "Eat faster than ever.", add: { ragdoll: 0, maine: 0, siamese: 1, british: 2, black: 0, cow: 1, tabby: 3, chinchilla: -1 } },
-            { zh: "用身体挡住。", en: "Block it with my body.", add: { ragdoll: 0, maine: 3, siamese: 0, british: 0, black: 1, cow: 0, tabby: 2, chinchilla: -1 } },
-            { zh: "再靠近我就哈你了！", en: "One more step and I hiss.", add: { ragdoll: -1, maine: 1, siamese: 3, british: -1, black: 1, cow: 1, tabby: 1, chinchilla: -1 } },
-            { zh: "吃我一记喵喵拳！", en: "Take a meow meow punch!", add: { ragdoll: -1, maine: 0, siamese: 2, british: -1, black: 0, cow: 3, tabby: 1, chinchilla: -1 } },
-            { zh: "那就一起吃。", en: "Fine, we can share.", add: { ragdoll: 3, maine: 0, siamese: 1, british: 1, black: -1, cow: 0, tabby: 0, chinchilla: 0 } },
-            { zh: "呜呜呜你吃吧，我一点都不心痛。", en: "Go ahead then. It’s not like I’m heartbroken or anything.", add: { ragdoll: 2, maine: -1, siamese: 0, british: 0, black: 0, cow: 0, tabby: -1, chinchilla: 2 } }
-          ]
-        },
-        {
-          zh: "本猫的猫生节奏——",
-          en: "My cat-life rhythm is—",
-          options: [
-            { zh: "太阳出来就想活动，健康作息。", en: "Once the sun is up, I’m ready to move.", add: { ragdoll: 0, maine: 1, siamese: 2, british: 0, black: -1, cow: 0, tabby: 3, chinchilla: 0 } },
-            { zh: "猫当然是夜行动物啊！", en: "Cats are obviously creatures of the night.", add: { ragdoll: -1, maine: 0, siamese: 1, british: 0, black: 3, cow: 2, tabby: 1, chinchilla: 0 } },
-            { zh: "我有我自己的节奏。", en: "I have my own rhythm.", add: { ragdoll: 1, maine: 1, siamese: 0, british: 2, black: 1, cow: 0, tabby: 0, chinchilla: 2 } },
-            { zh: "先躺着，躺够了再决定要不要动。", en: "Lie down first. Decide later whether movement is necessary.", add: { ragdoll: 2, maine: 0, siamese: -1, british: 3, black: 0, cow: 0, tabby: -1, chinchilla: 1 } },
-            { zh: "突然启动，突然关机，没有中间状态。", en: "Sudden startup, sudden shutdown. No in-between.", add: { ragdoll: -1, maine: 0, siamese: 1, british: 0, black: 1, cow: 3, tabby: 0, chinchilla: 0 } }
-          ]
-        },
-        {
-          zh: "面对喜欢的东西，我会——",
-          en: "When I face something I really like, I will—",
-          options: [
-            { zh: "直接扑上去，抢到再说。", en: "Pounce first. Figure the rest out later.", add: { ragdoll: 0, maine: 0, siamese: 3, british: 0, black: -1, cow: 2, tabby: 2, chinchilla: -1 } },
-            { zh: "先盯着看，确认没人跟我抢。", en: "Watch first and make sure nobody else is taking it.", add: { ragdoll: 0, maine: 1, siamese: 0, british: 0, black: 1, cow: 0, tabby: 3, chinchilla: 1 } },
-            { zh: "表现得不明显，但会一直偷偷靠近。", en: "Act casual, but slowly keep moving closer.", add: { ragdoll: 3, maine: 0, siamese: 0, british: 0, black: 2, cow: 0, tabby: 0, chinchilla: 1 } },
-            { zh: "嘴上不稀罕，身体已经诚实过去了。", en: "Pretend I don’t care, while my body heads right over.", add: { ragdoll: 1, maine: 0, siamese: 2, british: 0, black: 0, cow: 1, tabby: 0, chinchilla: 2 } },
-            { zh: "真喜欢的话，反而会有点谨慎。", en: "If I truly like it, I become more careful.", add: { ragdoll: 2, maine: 0, siamese: -1, british: 0, black: 1, cow: -1, tabby: 1, chinchilla: 3 } }
-          ]
-        },
-        {
-          zh: "真要跟一群猫出去闯，我多半会——",
-          en: "If I really had to go on an adventure with a group of cats, I’d probably—",
-          options: [
-            { zh: "窜最前面，我是爱探险的朵拉。", en: "Dash to the front. Explorer mode activated.", add: { ragdoll: -1, maine: 0, siamese: 2, british: -1, black: 0, cow: 3, tabby: 2, chinchilla: -1 } },
-            { zh: "一路都在看风吹草动。", en: "Stay alert to every movement along the way.", add: { ragdoll: 0, maine: 1, siamese: 0, british: 0, black: 1, cow: 0, tabby: 3, chinchilla: 0 } },
-            { zh: "先找吃的，别的等填饱肚子再谈。", en: "Find food first. Everything else can wait.", add: { ragdoll: 0, maine: 0, siamese: 0, british: 1, black: 0, cow: 1, tabby: 3, chinchilla: -1 } },
-            { zh: "走过的地方我都会记着。", en: "Remember every place we pass.", add: { ragdoll: 0, maine: 3, siamese: 0, british: 0, black: 1, cow: -1, tabby: 2, chinchilla: 0 } },
-            { zh: "全都要听我的安排！", en: "Everyone follows my plan.", add: { ragdoll: -1, maine: 3, siamese: 2, british: 0, black: 0, cow: 1, tabby: 0, chinchilla: -1 } },
-            { zh: "不说话，但不掉队。", en: "Say nothing, but never fall behind.", add: { ragdoll: 2, maine: 1, siamese: -1, british: 0, black: 2, cow: -1, tabby: 0, chinchilla: 0 } }
-          ]
-        },
-        {
-          zh: "最不能惹到本猫的地方是——",
-          en: "The quickest way to annoy me is—",
-          options: [
-            { zh: "我正吃着呢，你还来烦我。", en: "Bothering me while I’m eating.", add: { ragdoll: 0, maine: 0, siamese: 1, british: 1, black: 0, cow: 0, tabby: 3, chinchilla: 0 } },
-            { zh: "睡着了还把我弄醒，啥意思？", en: "Waking me up for no good reason.", add: { ragdoll: 1, maine: 0, siamese: -1, british: 3, black: 0, cow: -1, tabby: 0, chinchilla: 2 } },
-            { zh: "我已经往后退了，你还非要贴上来。", en: "I already backed away and you still kept coming closer.", add: { ragdoll: -1, maine: 1, siamese: 0, british: 0, black: 3, cow: 0, tabby: 2, chinchilla: 1 } },
-            { zh: "不许动本喵的东西。", en: "Touching my stuff.", add: { ragdoll: 0, maine: 3, siamese: 0, british: 0, black: 1, cow: 0, tabby: 2, chinchilla: 0 } },
-            { zh: "一会儿来逗我，一会儿又不理我。", en: "Giving me attention, then suddenly ignoring me.", add: { ragdoll: 3, maine: 0, siamese: 1, british: 0, black: 0, cow: 0, tabby: -1, chinchilla: 2 } },
-            { zh: "当着我的面摸别的小猫。", en: "Petting another cat right in front of me.", add: { ragdoll: 1, maine: 0, siamese: 2, british: 0, black: 0, cow: 0, tabby: -1, chinchilla: 3 } }
-          ]
-        },
-        {
-          zh: "好朋猫饿得喵喵叫，你的反应是——",
-          en: "A close cat friend is meowing from hunger. My reaction is—",
-          options: [
-            { zh: "我这儿还有两口，先垫吧垫吧。", en: "I still have a few bites left. Here, have some.", add: { ragdoll: 3, maine: 0, siamese: 0, british: 1, black: -1, cow: 0, tabby: 0, chinchilla: 1 } },
-            { zh: "这附近没罐头香味吗，自己闻着去找。", en: "Can’t you smell where the food is? Go find it.", add: { ragdoll: -1, maine: 1, siamese: 0, british: 0, black: 1, cow: 0, tabby: 3, chinchilla: 0 } },
-            { zh: "走走走，一起去厨房门口蹲着，等人类心虚。", en: "Come on, let’s sit by the kitchen and guilt the humans together.", add: { ragdoll: 1, maine: 0, siamese: 3, british: 0, black: 0, cow: 2, tabby: 1, chinchilla: -1 } },
-            { zh: "先忍忍嘛，饿一会儿又不会立刻变小猫干。", en: "Just hold on a bit. You won’t turn into dried kitten immediately.", add: { ragdoll: 0, maine: 1, siamese: -1, british: 3, black: 0, cow: 0, tabby: 0, chinchilla: 1 } },
-            { zh: "走，我带你去翻翻，看哪里有能吃的。", en: "Come with me, I’ll help you look for food.", add: { ragdoll: 1, maine: 0, siamese: 1, british: 0, black: 0, cow: 1, tabby: 3, chinchilla: -1 } },
-            { zh: "你先别叫了，叫得我都跟着有点饿。", en: "Could you stop meowing? You’re making me hungry too.", add: { ragdoll: 0, maine: 2, siamese: 0, british: 1, black: 0, cow: 0, tabby: 0, chinchilla: 2 } }
-          ]
-        },
-        {
-          zh: "说到活动筋骨，本猫一般是——",
-          en: "When it comes to moving my body, I’m usually—",
-          options: [
-            { zh: "跑！蹿！跳！", en: "Run! Dash! Jump!", add: { ragdoll: -1, maine: 0, siamese: 3, british: -1, black: 0, cow: 2, tabby: 2, chinchilla: -1 } },
-            { zh: "风雨无法撼动我睡觉的决心。", en: "Nothing can shake my commitment to sleeping.", add: { ragdoll: 1, maine: 0, siamese: -1, british: 3, black: 0, cow: -1, tabby: -1, chinchilla: 2 } },
-            { zh: "慢慢走、伸伸爪，活动活动就差不多了。", en: "A slow walk, a stretch, and that’s enough exercise.", add: { ragdoll: 2, maine: 0, siamese: 0, british: 3, black: 0, cow: -1, tabby: 0, chinchilla: 1 } },
-            { zh: "要么不动，要么跑酷。", en: "Either no movement at all, or full parkour.", add: { ragdoll: -1, maine: 0, siamese: 1, british: 0, black: 0, cow: 3, tabby: 1, chinchilla: -1 } },
-            { zh: "晚安。", en: "Good night.", add: { ragdoll: 1, maine: 0, siamese: -1, british: 3, black: 1, cow: -1, tabby: -1, chinchilla: 1 } },
-            { zh: "白天省电，晚上发疯，这很合理吧。", en: "Saving energy by day, losing it by night. Perfectly reasonable.", add: { ragdoll: -1, maine: 0, siamese: 1, british: 0, black: 3, cow: 2, tabby: 0, chinchilla: 0 } }
-          ]
-        },
-        {
-          zh: "真要出门玩，本猫比较适合在——",
-          en: "If I were to go out and have fun, I’d probably be best at—",
-          options: [
-            { zh: "白天，亮堂堂的，正适合到处晃。", en: "Daytime, when everything is bright and easy to roam around.", add: { ragdoll: 0, maine: 0, siamese: 2, british: 0, black: -1, cow: 1, tabby: 3, chinchilla: 0 } },
-            { zh: "傍晚，比较有感觉。", en: "Around dusk. Better atmosphere.", add: { ragdoll: 1, maine: 0, siamese: 0, british: 1, black: 2, cow: 0, tabby: 0, chinchilla: 2 } },
-            { zh: "不到晚上不出门。", en: "I don’t go out before nightfall.", add: { ragdoll: -1, maine: 0, siamese: 0, british: 0, black: 3, cow: 2, tabby: 0, chinchilla: 1 } },
-            { zh: "几点都行，真有局就喊我。", en: "Just call me.", add: { ragdoll: 1, maine: 0, siamese: 3, british: 0, black: -1, cow: 1, tabby: 1, chinchilla: -1 } },
-            { zh: "不是不出，是缓出、慢出、优出。", en: "It’s not that I won’t go out. I just prefer to go out slowly and elegantly.", add: { ragdoll: 1, maine: 0, siamese: -1, british: 1, black: 1, cow: -1, tabby: 0, chinchilla: 3 } },
-            { zh: "下过雨最好，空气里全是新鲜味道。", en: "Right after rain. The air smells brand new.", add: { ragdoll: 0, maine: 0, siamese: 0, british: 0, black: 2, cow: 0, tabby: 3, chinchilla: 1 } }
-          ]
-        }
-      ];
-
-      function textOf(key) {
-        return uiText[currentLang][key];
+      const sumPct = currentResult.rankings.reduce((s,x)=>s+x.pct,0);
+      if(sumPct !== 100 && currentResult.rankings.length > 0){
+        currentResult.rankings[0].pct += (100 - sumPct);
       }
+    }
 
-      function showPage(pageId) {
-        document.querySelectorAll(".page").forEach((p) => p.classList.add("hidden"));
-        document.getElementById(pageId).classList.remove("hidden");
-        if (pageId === "info") renderEncyclopedia();
-      }
+    function renderResult(){
+      if(!currentResult) return;
+      const t = currentLang === 'en' ? uiText.en : uiText["zh-Hans"];
+      const d = currentLang === 'en' ? catData[currentResult.main].en : catData[currentResult.main].zh;
 
-      function resetScores() {
-        return {
-          ragdoll: 0,
-          maine: 0,
-          siamese: 0,
-          british: 0,
-          black: 0,
-          cow: 0,
-          tabby: 0,
-          chinchilla: 0
-        };
-      }
+      document.getElementById('resultHead').innerText = currentLang === 'en' ? t.resultHead : ensureCN(t.resultHead);
+      document.getElementById('resultName').innerText = currentLang === 'en' ? d.name : ensureCN(d.name);
+      document.getElementById('resultImg').src = imageMap[currentResult.main];
+      document.getElementById('resultImg').alt = currentLang === 'en' ? d.name : ensureCN(d.name);
+      document.getElementById('resultHook').innerText = currentLang === 'en' ? d.hook : ensureCN(d.hook);
+      document.getElementById('resultShortLine').innerText = currentLang === 'en' ? d.short : ensureCN(d.short);
+      document.getElementById('resultShortDesc').innerText = currentLang === 'en' ? d.shortDesc : ensureCN(d.shortDesc);
+      const tagsBox = document.getElementById('resultTags');
+      tagsBox.innerHTML = '';
+      d.tags.forEach(tag=>{
+        const span = document.createElement('span');
+        span.className = 'tag ' + (currentLang === 'en' ? 'en' : 'cn');
+        span.textContent = currentLang === 'en' ? tag : ensureCN(tag);
+        tagsBox.appendChild(span);
+      });
 
-      let scores = resetScores();
+      document.getElementById('detailToggle').innerText = currentLang === 'en'
+        ? (detailOpen ? t.detailClose : t.detailOpen)
+        : ensureCN(detailOpen ? t.detailClose : t.detailOpen);
 
-      function updateStaticUI() {
-        document.getElementById("home-brand").innerText = textOf("homeBrand");
-        document.getElementById("home-title").innerHTML = textOf("homeTitle");
-        document.getElementById("start-btn").innerText = textOf("startBtn");
-        document.getElementById("loading-text").innerText = textOf("loading");
-        document.getElementById("prev-btn").innerText = textOf("prevQuestion");
-        document.getElementById("result-title").innerText = textOf("resultTitle");
-        document.getElementById("share-btn").innerText = textOf("share");
-        document.getElementById("retry-btn").innerText = textOf("retry");
-        document.getElementById("gallery-link").innerText = textOf("seeOthers");
-        document.getElementById("gallery-title").innerText = textOf("gallery");
-        document.getElementById("prev-cat-btn").innerText = textOf("prevCat");
-        document.getElementById("next-cat-btn").innerText = textOf("nextCat");
-        document.getElementById("back-home-btn").innerText = textOf("backHome");
+      const detailWrap = document.getElementById('detailWrap');
+      detailWrap.classList.toggle('hidden', !detailOpen);
+      document.getElementById('resultFullDesc').innerHTML = d.full.map(p => `<p>${currentLang === 'en' ? p : ensureCN(p)}</p>`).join('');
 
-        const creatorHTML = `${textOf("creatorPrefix")} <a href="${textOf("creatorUrl")}" target="_blank">${textOf("creatorHandle")}</a>`;
-        document.getElementById("home-creator").innerHTML = creatorHTML;
-        document.getElementById("result-creator").innerHTML = creatorHTML;
-      }
-
-      function toggleLang() {
-        currentLang = currentLang === "zh" ? "en" : "zh";
-        updateStaticUI();
-
-        if (!document.getElementById("quiz").classList.contains("hidden")) showQuestion();
-        if (!document.getElementById("result").classList.contains("hidden")) updateResultUI();
-        if (!document.getElementById("info").classList.contains("hidden")) renderEncyclopedia();
-      }
-
-      function startQuiz() {
-        const loader = document.getElementById("loading-layer");
-        const video = document.getElementById("loading-video");
-
-        updateStaticUI();
-        loader.classList.remove("hidden");
-
-        if (video) {
-          video.currentTime = 0;
-          const playPromise = video.play();
-          if (playPromise !== undefined) playPromise.catch(() => {});
-        }
-
-        setTimeout(() => {
-          index = 0;
-          answerHistory = [];
-          scores = resetScores();
-          currentCat = null;
-          secondaryCat = null;
-          loader.classList.add("hidden");
-          showPage("quiz");
-          showQuestion();
-        }, 2200);
-      }
-
-      function updateQuizTip() {
-        const pool = quizTips[currentLang];
-        document.getElementById("quiz-tip").innerText =
-          pool[Math.floor(Math.random() * pool.length)];
-      }
-
-      function showQuestion() {
-        const q = questions[index];
-        document.getElementById("question").innerText =
-          currentLang === "zh" ? q.zh : q.en;
-        document.getElementById("progress").innerText = `${index + 1} / ${questions.length}`;
-
-        const percent = ((index + 1) / questions.length) * 100;
-        document.getElementById("progress-bar").style.width = percent + "%";
-        document.getElementById("cat-runner").style.left = percent + "%";
-
-        document.getElementById("prev-btn").classList.toggle("hidden", index === 0);
-        document.getElementById("prev-btn").innerText = textOf("prevQuestion");
-
-        let html = "";
-        q.options.forEach((opt, i) => {
-          const label = currentLang === "zh" ? opt.zh : opt.en;
-          html += `<button class="option-btn" onclick="answer(${i})">${label}</button>`;
-        });
-        document.getElementById("options").innerHTML = html;
-        updateQuizTip();
-      }
-
-      function addScores(addObj) {
-        for (const key in addObj) scores[key] += addObj[key];
-      }
-
-      function subtractScores(addObj) {
-        for (const key in addObj) scores[key] -= addObj[key];
-      }
-
-      function answer(optionIndex) {
-        const selected = questions[index].options[optionIndex];
-        addScores(selected.add);
-        answerHistory.push(optionIndex);
-        index++;
-
-        if (index < questions.length) {
-          showQuestion();
-        } else {
-          calculateResult();
-        }
-      }
-
-      function prevQuestion() {
-        if (index > 0) {
-          index--;
-          const prevOptionIndex = answerHistory.pop();
-          const prevOption = questions[index].options[prevOptionIndex];
-          subtractScores(prevOption.add);
-          showQuestion();
-        }
-      }
-
-      function calculateResult() {
-        const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-        const [mainKey, mainScore] = sorted[0];
-        const [subKey, subScore] = sorted[1];
-
-        currentCat = mainKey;
-        secondaryCat = mainScore - subScore <= 3 ? subKey : null;
-
-        showPage("result");
-        updateResultUI();
-      }
-
-      function secondaryLine(mainKey, subKey) {
-        if (!subKey) return "";
-        const subName = catData[subKey][currentLang].name.replace(/[\u{1F300}-\u{1FAFF}]/gu, "").trim();
-
-        if (currentLang === "zh") {
-          const lines = {
-            black: `你身上也有一点 ${subName} 的影子。`,
-            cow: `你偶爾也會切到 ${subName} 的頻道。`,
-            tabby: `除了主貓格，你也带一点 ${subName} 的生存感。`
-          };
-          return lines[subKey] || `除了主貓格，你身上也有一点 ${subName}。`;
-        }
-
-        const linesEn = {
-          black: `You also carry a little ${subName} energy.`,
-          cow: `You sometimes switch into a very ${subName} channel.`,
-          tabby: `Alongside your main type, you also carry a little ${subName} survival instinct.`
-        };
-        return linesEn[subKey] || `Alongside your main type, you also carry a little ${subName} energy.`;
-      }
-
-      function updateResultUI() {
-        if (!currentCat) return;
-
-        const data = catData[currentCat][currentLang];
-        document.getElementById("type").innerText = data.name;
-        document.getElementById("catImg").src = imageMap[currentCat];
-        document.getElementById("catImg").alt = data.name;
-        document.getElementById("desc").innerText = data.desc.join("\n\n");
-        document.getElementById("result-tags").innerHTML = data.tags
-          .map((tag) => `<span class="result-tag">${tag}</span>`)
-          .join("");
-
-        const subEl = document.getElementById("subCat");
-        if (secondaryCat) {
-          subEl.innerText = secondaryLine(currentCat, secondaryCat);
-          subEl.classList.remove("hidden");
-        } else {
-          subEl.innerText = "";
-          subEl.classList.add("hidden");
-        }
-
-        updateStaticUI();
-      }
-
-      function saveResultAsImage() {
-        const card = document.getElementById("result-capture-card");
-        if (!card || typeof html2canvas === "undefined") return;
-
-        html2canvas(card, {
-          backgroundColor: null,
-          scale: 2,
-          useCORS: true
-        }).then((canvas) => {
-          const link = document.createElement("a");
-          link.download = "my-meowti-result.png";
-          link.href = canvas.toDataURL("image/png");
-          link.click();
-        });
-      }
-
-      function renderEncyclopedia() {
-        const key = encyclopediaData[encyclopediaIndex];
-        const data = catData[key][currentLang];
-        const descHTML = data.desc.map((p) => `<p>${p}</p>`).join("");
-
-        document.getElementById("encyclopedia-content").innerHTML = `
-          <div class="wiki-card">
-            <img src="${imageMap[key]}" class="cat-img" alt="${data.name}">
-            <div class="wiki-name">${data.name}</div>
-            <div class="wiki-short">${data.short}</div>
-            <div class="result-tags">
-              ${data.tags.map((tag) => `<span class="result-tag">${tag}</span>`).join("")}
-            </div>
-            <div class="wiki-desc">${descHTML}</div>
+      document.getElementById('mixTitle').innerText = currentLang === 'en' ? t.mixTitle : ensureCN(t.mixTitle);
+      const rows = document.getElementById('mixRows');
+      rows.innerHTML = '';
+      currentResult.rankings.forEach(item=>{
+        const cd = currentLang === 'en' ? catData[item.key].en : catData[item.key].zh;
+        const row = document.createElement('div');
+        row.className = 'mix-row';
+        row.innerHTML = `
+          <div class="mix-label">
+            <span>${currentLang === 'en' ? cd.name.replace(/[^\w\s\-&.]/g,'').trim() : ensureCN(cd.name.replace(/[^\u4e00-\u9fa5A-Za-z0-9\s]/g,'').trim())}</span>
+            <span>${item.pct}%</span>
           </div>
+          <div class="bar-bg"><div class="bar-fill" style="width:${item.pct}%"></div></div>
         `;
+        rows.appendChild(row);
+      });
 
-        document.getElementById("encyclopedia-dots").innerHTML = encyclopediaData
-          .map((_, i) => `<span class="dot ${i === encyclopediaIndex ? "active" : ""}"></span>`)
-          .join("");
+      document.getElementById('shareFooter').innerText = currentLang === 'en' ? t.shareFooter : ensureCN(t.shareFooter);
+      document.getElementById('shareBtn').innerText = currentLang === 'en' ? t.shareBtn : ensureCN(t.shareBtn);
+      document.getElementById('retryBtn').innerText = currentLang === 'en' ? t.retryBtn : ensureCN(t.retryBtn);
+      document.getElementById('galleryLink').innerText = currentLang === 'en' ? t.galleryLink : ensureCN(t.galleryLink);
 
-        updateStaticUI();
-      }
+      const prefix = currentLang === 'en' ? t.creatorPrefix : ensureCN(t.creatorPrefix);
+      const handle = currentLang === 'en' ? t.creatorHandle : ensureCN(t.creatorHandle);
+      document.getElementById('resultCreator').innerHTML = `${prefix} <a href="${getCreatorURL()}" target="_blank">${handle}</a>`;
+    }
 
-      function changeEncyclopedia(step) {
-        encyclopediaIndex =
-          (encyclopediaIndex + step + encyclopediaData.length) %
-          encyclopediaData.length;
-        renderEncyclopedia();
-      }
+    function toggleDetail(){
+      detailOpen = !detailOpen;
+      renderResult();
+    }
 
-      updateStaticUI();
-    </script>
-  </body>
+    function restartQuiz(){
+      detailOpen = false;
+      startQuiz();
+    }
+
+    function renderGallery(){
+      const key = Object.keys(catData)[galleryIndex];
+      const d = currentLang === 'en' ? catData[key].en : catData[key].zh;
+      const t = currentLang === 'en' ? uiText.en : uiText["zh-Hans"];
+      document.getElementById('galleryImg').src = imageMap[key];
+      document.getElementById('galleryImg').alt = currentLang === 'en' ? d.name : ensureCN(d.name);
+      document.getElementById('galleryName').innerText = currentLang === 'en' ? d.name : ensureCN(d.name);
+      document.getElementById('galleryShort').innerText = currentLang === 'en' ? d.short : ensureCN(d.short);
+      document.getElementById('galleryDesc').innerHTML = d.full.map(p => `<p>${currentLang === 'en' ? p : ensureCN(p)}</p>`).join('');
+      const tagBox = document.getElementById('galleryTags');
+      tagBox.innerHTML = '';
+      d.tags.forEach(tag=>{
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.textContent = currentLang === 'en' ? tag : ensureCN(tag);
+        tagBox.appendChild(span);
+      });
+      document.getElementById('galleryPrev').innerText = currentLang === 'en' ? t.galleryPrev : ensureCN(t.galleryPrev);
+      document.getElementById('galleryNext').innerText = currentLang === 'en' ? t.galleryNext : ensureCN(t.galleryNext);
+      document.getElementById('galleryBack').innerText = currentLang === 'en' ? t.galleryBack : ensureCN(t.galleryBack);
+
+      const dots = document.getElementById('galleryDots');
+      dots.innerHTML = Object.keys(catData).map((_,i)=>`<span class="dot ${i===galleryIndex?'active':''}"></span>`).join('');
+    }
+
+    function changeGallery(step){
+      const total = Object.keys(catData).length;
+      galleryIndex = (galleryIndex + step + total) % total;
+      renderGallery();
+    }
+
+    async function saveShareImage(){
+      const capture = document.getElementById('shareCapture');
+      const detail = document.getElementById('detailWrap');
+      const wasOpen = !detail.classList.contains('hidden');
+      if(wasOpen) detail.classList.add('hidden');
+      const canvas = await html2canvas(capture, {backgroundColor:null, scale:2, useCORS:true});
+      if(wasOpen && detailOpen) detail.classList.remove('hidden');
+      const link = document.createElement('a');
+      link.download = 'my-meowti-result.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    renderHome();
+  </script>
+</body>
 </html>
