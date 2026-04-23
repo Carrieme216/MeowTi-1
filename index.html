@@ -165,9 +165,6 @@
       .result-name{font-size:30px}
     }
   
-    /* result page cleanup */
-    #shareFooter,#galleryLink,#resultCreator{display:none !important;}
-    #resultPage a{color:var(--orange-deep) !important;text-decoration:none;}
 
   </style>
   <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.min.js"></script>
@@ -262,15 +259,12 @@
           <div id="mixRows"></div>
         </div>
 
-        <div id="shareFooter" class="share-footer"></div>
       </div>
 
       <div class="actions">
         <button id="shareBtn" class="share-btn cn" onclick="saveShareImage()"></button>
         <button id="retryBtn" class="retry-btn cn" onclick="restartQuiz()"></button>
-        <a id="galleryLink" class="gallery-link cn" onclick="showGallery()"></a>
       </div>
-      <div id="resultCreator" class="creator-note cn"></div>
     </section>
 
     <section id="gallery" class="page-card gallery-page hidden">
@@ -1055,13 +1049,15 @@
         rows.appendChild(row);
       });
 
-      document.getElementById('shareFooter').innerHTML = `MeowTI · <a href="${getCreatorURL()}" target="_blank">${currentLang === 'en' ? t.creatorHandle : ensureCN(t.creatorHandle)}</a>`;
+      const shareFooter = document.getElementById('shareFooter');
+      if (shareFooter) shareFooter.innerHTML = `MeowTI · <a href="${getCreatorURL()}" target="_blank">${currentLang === 'en' ? t.creatorHandle : ensureCN(t.creatorHandle)}</a>`;
       document.getElementById('shareBtn').innerText = currentLang === 'en' ? t.shareBtn : ensureCN(t.shareBtn);
       document.getElementById('retryBtn').innerText = currentLang === 'en' ? t.retryBtn : ensureCN(t.retryBtn);
       document.getElementById('galleryLink').innerText = currentLang === 'en' ? t.galleryLink : ensureCN(t.galleryLink);
 
       const handle = currentLang === 'en' ? t.creatorHandle : ensureCN(t.creatorHandle);
-      document.getElementById('resultCreator').innerHTML = `MeowTI · <a href="${getCreatorURL()}" target="_blank">${handle}</a>`;
+      const resultCreator = document.getElementById('resultCreator');
+      if (resultCreator) resultCreator.innerHTML = `MeowTI · <a href="${getCreatorURL()}" target="_blank">${handle}</a>`;
     }
 
     function toggleDetail(){
