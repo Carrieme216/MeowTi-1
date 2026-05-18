@@ -79,7 +79,7 @@
     .topbar-left{display:flex;align-items:center;gap:8px}
     .mini-btn{
       width:38px;height:38px;border-radius:50%;border:1px solid #eedfbe;background:rgba(255,255,255,.92);
-      color:var(--brown);font-size:18px;cursor:pointer
+      color:var(--brown);font-size:18px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;
     }
     .brand{flex:1;text-align:center;font-weight:700;color:var(--brown);font-size:15px;font-family:var(--font-en)}
     .quiz-page,.result-page,.gallery-page{
@@ -132,7 +132,7 @@
     .mix-title{font-size:18px;font-weight:800;color:var(--brown);margin-bottom:12px;text-align:center}
     .mix-row{margin-bottom:12px}
     .mix-row:last-child{margin-bottom:0}
-    .mix-label{display:flex;justify-content:space-between;gap:10px;font-size:14px;margin-bottom:6px;color:var(--brown);font-weight:700}
+    .mix-label{display:flex;justify-space-between;gap:10px;font-size:14px;margin-bottom:6px;color:var(--brown);font-weight:700}
     .bar-bg{width:100%;height:10px;background:#f6ecd7;border-radius:999px;overflow:hidden}
     .bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#f6b33a,var(--orange))}
     .actions{margin-top:18px}
@@ -167,12 +167,12 @@
       .question-title{font-size:24px}
       .result-name{font-size:30px}
     }
-  
-
   </style>
   <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.min.js"></script>
 </head>
 <body>
+  <audio id="bgm" src="bgm.mp3" loop></audio>
+
   <div id="loading-layer" class="hidden">
     <video id="loading-video" muted playsinline preload="auto">
       <source src="loading-cat.mp4" type="video/mp4" />
@@ -186,6 +186,7 @@
         <div class="topbar" style="margin-bottom:22px">
           <div class="topbar-left">
             <button class="mini-btn" onclick="showGallery()" title="看看别的小猫">≡</button>
+            <button id="musicBtn" class="mini-btn" onclick="toggleMute()" title="音乐开关" style="margin-left: 6px;">🔇</button>
           </div>
           <div class="lang-group">
             <button class="lang-btn" data-lang="zh-Hant" onclick="setLang('zh-Hant')">繁</button>
@@ -206,6 +207,7 @@
         <div class="topbar-left">
           <button class="mini-btn" onclick="showGallery()" title="看看别的小猫">≡</button>
           <button class="mini-btn" onclick="goHome()">×</button>
+          <button id="musicBtnQuiz" class="mini-btn" onclick="toggleMute()" title="音乐开关" style="margin-left: 6px;">🔇</button>
         </div>
         <div class="brand">MeowTI</div>
         <div class="lang-group">
@@ -231,6 +233,7 @@
         <div class="topbar-left">
           <button class="mini-btn" onclick="showGallery()" title="看看别的小猫">≡</button>
           <button class="mini-btn" onclick="goHome()">×</button>
+          <button id="musicBtnResult" class="mini-btn" onclick="toggleMute()" title="音乐开关" style="margin-left: 6px;">🔇</button>
         </div>
         <div class="brand">MeowTI</div>
         <div class="lang-group">
@@ -261,7 +264,6 @@
           <div id="mixTitle" class="mix-title cn"></div>
           <div id="mixRows"></div>
         </div>
-
       </div>
 
       <div class="actions">
@@ -274,6 +276,7 @@
       <div class="topbar">
         <div class="topbar-left">
           <button class="mini-btn" onclick="showResult()">←</button>
+          <button id="musicBtnGallery" class="mini-btn" onclick="toggleMute()" title="音乐开关" style="margin-left: 6px;">🔇</button>
         </div>
         <div class="brand">MeowTI</div>
         <div class="lang-group">
@@ -367,7 +370,7 @@
         "尾巴能帮助猫保持平衡。",
         "猫睡很多，但不一定每次都睡得很沉。",
         "猫胡须能帮助判断空间宽窄。",
-        "猫咪喜欢把熟悉的气味留在自己的地盘里。",
+        "猫咪喜欢把熟悉的气味留在自己的地盤里。",
         "猫耳朵会先一步捕捉到细小动静。",
         "猫踩奶通常和放松感、安全感有关。",
         "猫会用不同叫声和人沟通。",
@@ -761,7 +764,7 @@
           { zh:"再靠近我就哈你了！", en:"One more step and I hiss.", add:{siamese:3,maine:1,black:1,cow:1,tabby:1,ragdoll:-1,british:-1,chinchilla:-1}},
           { zh:"吃我一记喵喵拳！", en:"Take a meow meow punch!", add:{cow:3,siamese:2,tabby:1,ragdoll:-1,british:-1,black:0,maine:0,chinchilla:-1}},
           { zh:"那就一起吃。", en:"Fine, we can share.", add:{ragdoll:3,siamese:1,british:1,tabby:0,cow:0,maine:0,chinchilla:0,black:-1}},
-          { zh:"呜呜呜你吃吧，我一点都不心痛。", en:"Go ahead then. It’s not like I’m heartbroken or anything.", add:{ragdoll:2,chinchilla:2,ragdoll2:0,maine:-1,tabby:-1,siamese:0,british:0,black:0,cow:0}}
+          { zh:"呜呜呜你吃吧，我一点都不心痛。", en:"Go ahead then. It’s not like I’m heartbroken or anything.", add:{ragdoll:2,chinchilla:2,tabby:-1,siamese:0,british:0,black:0,cow:0,maine:-1}}
         ]
       },
       {
@@ -794,7 +797,7 @@
         zh: "好朋猫饿得喵喵叫，你的反应是——",
         en: "A close cat friend is meowing from hunger. My reaction is—",
         options: [
-          { zh:"我这儿还有两口，先垫吧垫吧。", en:"I still have a few bites left. Here, have some.", add:{ragdoll:3,british:1,chinchilla:1,ragdoll2:0,black:-1,tabby:0,cow:0,maine:0,siamese:0}},
+          { zh:"我这儿还有两口，先垫吧垫吧。", en:"I still have a few bites left. Here, have some.", add:{ragdoll:3,british:1,chinchilla:1,black:-1,tabby:0,cow:0,maine:0,siamese:0}},
           { zh:"这附近没罐头香味吗，自己闻着去找。", en:"Can’t you smell where the food is? Go find it.", add:{tabby:3,maine:1,black:1,ragdoll:-1,siamese:0,british:0,cow:0,chinchilla:0}},
           { zh:"走走走，一起去厨房门口蹲着，等人类心虚。", en:"Come on, let’s sit by the kitchen and guilt the humans together.", add:{siamese:3,cow:2,tabby:1,ragdoll:1,black:0,maine:0,british:0,chinchilla:-1}},
           { zh:"先忍忍嘛，饿一会儿又不会立刻变小猫干。", en:"Just hold on a bit. You won’t turn into dried kitten immediately.", add:{british:3,maine:1,chinchilla:1,ragdoll:0,black:0,cow:0,tabby:0,siamese:-1}},
@@ -830,9 +833,6 @@
       }
     ];
 
-    // cleanup any accidental helper key in options
-    questionsMaster.forEach(q => q.options.forEach(o => { delete o.add.ragdoll2; }));
-
     let currentLang = "zh-Hans";
     let currentPage = "home";
     let questionOrder = [];
@@ -842,6 +842,7 @@
     let currentResult = null;
     let detailOpen = false;
     let galleryIndex = 0;
+    let isMuted = true; // 預設靜音符合瀏覽器策略
 
     function resetScores() {
       scores = {ragdoll:0, maine:0, siamese:0, british:0, black:0, cow:0, tabby:0, chinchilla:0};
@@ -884,6 +885,7 @@
       if(currentPage === 'quiz') renderQuestion();
       if(currentPage === 'result') renderResult();
       if(currentPage === 'gallery') renderGallery();
+      updateMusicButtons();
     }
 
     function renderHome(){
@@ -898,6 +900,15 @@
     }
 
     function startQuiz(){
+      // 點擊開始變貓時，主動觸發音樂播放並解除靜音
+      const bgm = document.getElementById('bgm');
+      if (bgm && isMuted) {
+        bgm.play().catch(()=>{});
+        bgm.muted = false;
+        isMuted = false;
+        updateMusicButtons();
+      }
+      
       questionOrder = shuffleArray(questionsMaster.map((_,i)=>i));
       currentIndex = 0;
       selectedHistory = [];
@@ -930,6 +941,7 @@
       if(id==='quiz') renderQuestion();
       if(id==='result') renderResult();
       if(id==='gallery') renderGallery();
+      updateMusicButtons();
     }
 
     function goHome(){ showPage('home'); }
@@ -1056,11 +1068,6 @@
       if (shareFooter) shareFooter.innerHTML = `MeowTI · <a href="${getCreatorURL()}" target="_blank">${currentLang === 'en' ? t.creatorHandle : ensureCN(t.creatorHandle)}</a>`;
       document.getElementById('shareBtn').innerText = currentLang === 'en' ? t.shareBtn : ensureCN(t.shareBtn);
       document.getElementById('retryBtn').innerText = currentLang === 'en' ? t.retryBtn : ensureCN(t.retryBtn);
-      document.getElementById('galleryLink').innerText = currentLang === 'en' ? t.galleryLink : ensureCN(t.galleryLink);
-
-      const handle = currentLang === 'en' ? t.creatorHandle : ensureCN(t.creatorHandle);
-      const resultCreator = document.getElementById('resultCreator');
-      if (resultCreator) resultCreator.innerHTML = `MeowTI · <a href="${getCreatorURL()}" target="_blank">${handle}</a>`;
     }
 
     function toggleDetail(){
@@ -1115,6 +1122,34 @@
       link.download = 'my-meowti-result.png';
       link.href = canvas.toDataURL('image/png');
       link.click();
+    }
+
+    // 背景音樂控制核心函數
+    function toggleMute() {
+      const bgm = document.getElementById('bgm');
+      if (!bgm) return;
+
+      if (bgm.paused) {
+        bgm.play().catch(()=>{});
+        bgm.muted = false;
+        isMuted = false;
+      } else if (bgm.muted) {
+        bgm.muted = false;
+        isMuted = false;
+      } else {
+        bgm.muted = true;
+        isMuted = true;
+      }
+      updateMusicButtons();
+    }
+
+    // 同步更新所有頁面上的音樂按鈕狀態
+    function updateMusicButtons() {
+      const icon = isMuted ? '🔇' : '🔊';
+      ['musicBtn', 'musicBtnQuiz', 'musicBtnResult', 'musicBtnGallery'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.innerText = icon;
+      });
     }
 
     renderHome();
